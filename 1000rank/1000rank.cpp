@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "json.hpp"
+#include <cpr/cpr.h>
 
 int main()
 {
@@ -18,6 +19,15 @@ int main()
     std::string jsonString = jsonObj.dump();
 
     std::cout << jsonString << std::endl;
+
+    cpr::Response response = cpr::Get(cpr::Url{ "https://api.example.com/data" });
+    if (response.status_code == 200) {
+        std::string responseData = response.text;
+        std::cout << response.text << std::endl;
+    }
+    else {
+        std::cout << "ERROR" << std::endl;
+    }
 
     return 0;
 }
