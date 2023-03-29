@@ -152,6 +152,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="1000rank.cpp" />
+    <ClCompile Include="DatabaseManager.cpp" />
+    <ClCompile Include="miniz.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DatabaseManager.h" />
+    <ClInclude Include="miniz.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

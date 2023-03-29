@@ -2,33 +2,63 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include "json.hpp"
-#include <cpr/cpr.h>
+#include "DatabaseManager.h"
+
+using json = nlohmann::json;
+using namespace std;
 
 int main()
 {
-    nlohmann::json jsonObj;
-    jsonObj["name"] = "John";
-    jsonObj["age"] = 30;
-
-    // Accessing data
-    std::string name = jsonObj["name"];
-    int age = jsonObj["age"];
-
-    // Converting JSON object to a string
-    std::string jsonString = jsonObj.dump();
-
-    std::cout << jsonString << std::endl;
-
-    cpr::Response response = cpr::Get(cpr::Url{ "https://api.example.com/data" });
-    if (response.status_code == 200) {
-        std::string responseData = response.text;
-        std::cout << response.text << std::endl;
+    // Open and read the config file
+    if (!filesystem::exists("config.json"))
+    {
+        cout << "config.json not found." << endl;
+        exit(1);
     }
-    else {
-        std::cout << "ERROR" << std::endl;
-    }
+    ifstream config_file("config.json");
 
+    if (!config_file.is_open())
+    {
+		cout << "Failed to open config.json." << endl;
+		exit(1);
+	}
+
+    json config;
+    try
+    {
+        config_file >> config;
+    }
+    catch (json::parse_error& e)
+    {
+		cout << "Failed to parse config.json: " << e.what() << endl;
+		exit(1);
+	}
+
+    // Load the config fields
+    string repo_owner = config["repo_owner"];
+    string repo_name = config["repo_name"];
+    string asset_name = config["asset_name"];
+    string local_file_path = config["local_file_path"];
+    string input_db_file_path = config["input_db_file_path"];
+    string output_db_file_path = config["output_db_file_path"];
+    bool reextract_db = config["reextract_db"];
+
+    // Create a DatabaseManager instance
+    DatabaseManager db_manager;
+
+    // Check if the database needs to be downloaded
+    if (db_manager.check_and_download_database(repo_owner, repo_name, asset_name, local_file_path, input_db_file_path, output_db_file_path, reextract_db))
+    {
+		cout << "Database is downloaded/up-to-date." << endl;
+	}
+    else
+    {
+		cout << "Error downloading database." << endl;
+	}
+
+    cout << "Program complete!" << endl;
     return 0;
 }
 
