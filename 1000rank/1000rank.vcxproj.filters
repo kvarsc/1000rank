@@ -24,12 +24,18 @@
     <ClCompile Include="miniz.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DatabaseDownloader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="miniz.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DatabaseDownloader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

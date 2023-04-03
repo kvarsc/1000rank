@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "json.hpp"
-#include "DatabaseManager.h"
+#include "DatabaseDownloader.h"
 
 using json = nlohmann::json;
 using namespace std;
@@ -45,11 +45,11 @@ int main()
     string output_db_file_path = config["output_db_file_path"];
     bool reextract_db = config["reextract_db"];
 
-    // Create a DatabaseManager instance
-    DatabaseManager db_manager;
+    // Create a DatabaseDownloader instance
+    DatabaseDownloader db_downloader;
 
     // Check if the database needs to be downloaded
-    if (db_manager.check_and_download_database(repo_owner, repo_name, asset_name, local_file_path, input_db_file_path, output_db_file_path, reextract_db))
+    if (db_downloader.check_and_download_database(repo_owner, repo_name, asset_name, local_file_path, input_db_file_path, output_db_file_path, reextract_db))
     {
 		cout << "Database is downloaded/up-to-date." << endl;
 	}

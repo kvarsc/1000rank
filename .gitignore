@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # database files
 ultimate_player_database*
+*.zip
