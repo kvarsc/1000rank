@@ -3,8 +3,10 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "json.hpp"
 #include "DatabaseDownloader.h"
+#include "DatabaseManager.h"
 
 using json = nlohmann::json;
 using namespace std;
@@ -43,7 +45,27 @@ int main()
     string local_file_path = config["local_file_path"];
     string input_db_file_path = config["input_db_file_path"];
     string output_db_file_path = config["output_db_file_path"];
+    string filtered_db_file_path = config["filtered_db_file_path"];
+    string pre_season_date = config["pre_season_date"];
+    string post_season_date = config["post_season_date"];
+    int minimum_entrants = config["minimum_entrants"];
+
+    // Load the special tournaments
+    vector<string> special_tournament_keys;
+    if (config.contains("special_tournaments"))
+    {
+        for (const auto& tournament : config["special_tournaments"])
+        {
+            if (tournament.contains("id"))
+            {
+				special_tournament_keys.push_back(tournament["id"].get<string>());
+            }
+		}
+	}
+
+    // Load the fields for which actions to take
     bool reextract_db = config["reextract_db"];
+    bool filter_db = config["filter_db"];
 
     // Create a DatabaseDownloader instance
     DatabaseDownloader db_downloader;
@@ -57,6 +79,17 @@ int main()
     {
 		cout << "Error downloading database." << endl;
 	}
+
+    // If the database needs to be filtered, create a DatabaseManager instance and filter the database
+    if (filter_db)
+    {
+        DatabaseManager db_manager(output_db_file_path);
+        db_manager.create_filtered_sets_database(filtered_db_file_path, pre_season_date, post_season_date, minimum_entrants, special_tournament_keys);
+    }
+
+    // Create a db_manager for the filtered database and print all counts
+    DatabaseManager db_manager(filtered_db_file_path);
+    db_manager.print_all_counts();
 
     cout << "Program complete!" << endl;
     return 0;

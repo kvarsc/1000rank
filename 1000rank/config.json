@@ -5,5 +5,22 @@
   "local_file_path" : "",
   "input_db_file_path" : "ultimate_player_database/ultimate_player_database.db",
   "output_db_file_path" : "ultimate_player_database.db",
-  "reextract_db" : false
+  "filtered_db_file_path" : "filtered_database.db",
+  "pre_season_date" : "2022-12-07",
+  "post_season_date" : "2023-12-07",
+  "minimum_entrants" : 51,
+  "special_tournaments": [
+    {
+      "id": "scuffed-world-tour__ultimate-singles",
+      "name": "Scuffed World Tour",
+      "end": 1671429600
+    },
+    {
+      "id": "smash-ultimate-summit-6__ultimate-singles",
+      "name": "Smash Ultimate Summit 6 Ultimate Singles",
+      "end": 1679900340
+    }
+  ],
+  "reextract_db" : false,
+  "filter_db" : false
 }
