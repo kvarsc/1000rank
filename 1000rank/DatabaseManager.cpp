@@ -69,10 +69,10 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
         "JOIN tournament_info ON sets.tournament_key = tournament_info.key "
         "WHERE tournament_info.end >= ? "
         "AND tournament_info.end < ? "
-        "AND NOT (sets.tournament_key LIKE '%sp__1on1' AND sets.location_names LIKE '%\"Round %') "
-        "AND (tournament_info.entrants >= ? OR tournament_info.key IN (" + special_keys_string + ")) "
-        "AND NOT (sets.p1_score = -1 OR sets.p2_score = -1) "
-        "AND NOT (tournament_info.online = 1);"
+        "AND NOT (sets.tournament_key LIKE '%sp__1on1' AND sets.location_names LIKE '%\"Round %') " // removes best-of-1 sets from JP tourneys
+        "AND (tournament_info.entrants >= ? OR tournament_info.key IN (" + special_keys_string + ")) " // invitationals
+        "AND NOT (sets.p1_score = -1 OR sets.p2_score = -1) " // removes DQs
+        "AND NOT (tournament_info.online = 1);" // we want offline only!!!
         << pre_season_unix_time
         << post_season_unix_time
         << minimum_entrants;
@@ -100,10 +100,10 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
         "JOIN sets ON sets.tournament_key = tournament_info.key "
         "WHERE tournament_info.end >= ? "
         "AND tournament_info.end < ? "
-        "AND NOT (sets.tournament_key LIKE '%sp__1on1' AND sets.location_names LIKE '%\"Round %') "
-        "AND (tournament_info.entrants >= ? OR tournament_info.key IN (" + special_keys_string + ")) "
-        "AND NOT (sets.p1_score = -1 OR sets.p2_score = -1) "
-        "AND NOT (tournament_info.online = 1);"
+        "AND NOT (sets.tournament_key LIKE '%sp__1on1' AND sets.location_names LIKE '%\"Round %') " // removes best-of-1 sets from JP tourneys
+        "AND (tournament_info.entrants >= ? OR tournament_info.key IN (" + special_keys_string + ")) " // invitationals
+        "AND NOT (sets.p1_score = -1 OR sets.p2_score = -1) " // removes DQs
+        "AND NOT (tournament_info.online = 1);" // we want offline only!!!
         << pre_season_unix_time
         << post_season_unix_time
         << minimum_entrants;
@@ -112,6 +112,16 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
     db << "DETACH DATABASE new_db;";
 
     cout << "Done filtering database." << endl;
+}
+
+void DatabaseManager::add_ranking_columns()
+{
+    cout << "Adding ranking columns to database..." << endl;
+
+    // Add the ranking columns to the 'players' table
+    db << "ALTER TABLE players ADD COLUMN ranking_score REAL DEFAULT 0.0;";
+    db << "ALTER TABLE players ADD COLUMN uncertainty REAL DEFAULT 0.0;";
+    db << "ALTER TABLE players ADD COLUMN volatility REAL DEFAULT 0.0;";
 }
 
 string DatabaseManager::special_tournament_keys_string(const vector<string>& special_tournament_keys) {

@@ -7,6 +7,7 @@
 #include "json.hpp"
 #include "DatabaseDownloader.h"
 #include "DatabaseManager.h"
+#include "RankingSystem.h"
 
 using json = nlohmann::json;
 using namespace std;
@@ -38,7 +39,7 @@ int main()
 		exit(1);
 	}
 
-    // Load the config fields
+    // Load the database fields
     string repo_owner = config["repo_owner"];
     string repo_name = config["repo_name"];
     string asset_name = config["asset_name"];
@@ -62,6 +63,16 @@ int main()
             }
 		}
 	}
+
+    // Load the parameters of the FIRE algorithm
+    double force_threshold = config["force_threshold"];
+    int nmin = config["nmin"];
+    double finc = config["finc"];
+    double fdec = config["fdec"];
+    double astart = config["astart"];
+    double fa = config["fa"];
+    double dtmax = config["dtmax"];
+    int dtmax_freq = config["dtmax_freq"];
 
     // Load the fields for which actions to take
     bool reextract_db = config["reextract_db"];
@@ -90,6 +101,18 @@ int main()
     // Create a db_manager for the filtered database and print all counts
     DatabaseManager db_manager(filtered_db_file_path);
     db_manager.print_all_counts();
+
+    // If the database needed to be filtered, do endpoint filtering and add the ranking columns
+    if (filter_db)
+    {
+        // TODO do endpoint filtering
+		db_manager.add_ranking_columns();
+	}
+
+    // Create the ranking system
+    RankingSystem ranking_system(force_threshold, nmin, finc, fdec, astart, fa, dtmax, dtmax_freq);
+
+    ranking_system.print_players_size();
 
     cout << "Program complete!" << endl;
     return 0;

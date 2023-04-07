@@ -19,6 +19,7 @@ public:
     void print_all_counts();
 
     void create_filtered_sets_database(const string& new_db_path, string pre_season_date, string post_season_date, int minimum_entrants, const vector<string>& special_tournament_keys);
+    void add_ranking_columns();
 
 private:
     sqlite::database db;

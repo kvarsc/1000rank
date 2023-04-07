@@ -21,6 +21,14 @@
       "end": 1679900340
     }
   ],
+  "force_threshold" : 1e-10,
+  "nmin" : 5,
+  "finc" : 1.1,
+  "fdec": 0.5,
+  "astart" : 0.1,
+  "fa" : 0.99,
+  "dtmax" : 0.005,
+  "dtmax_freq" : 100,
   "reextract_db" : false,
   "filter_db" : false
 }

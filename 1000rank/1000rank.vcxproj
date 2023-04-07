@@ -164,7 +164,10 @@
     <ClCompile Include="DatabaseManager.cpp" />
     <ClCompile Include="hdr\shell.c" />
     <ClCompile Include="hdr\sqlite3.c" />
+    <ClCompile Include="MatchRecord.cpp" />
     <ClCompile Include="miniz.c" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RankingSystem.cpp" />
     <ClCompile Include="time_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -181,7 +184,10 @@
     <ClInclude Include="hdr\sqlite_modern_cpp\utility\function_traits.h" />
     <ClInclude Include="hdr\sqlite_modern_cpp\utility\uncaught_exceptions.h" />
     <ClInclude Include="hdr\sqlite_modern_cpp\utility\utf16_utf8.h" />
+    <ClInclude Include="MatchRecord.h" />
     <ClInclude Include="miniz.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="RankingSystem.h" />
     <ClInclude Include="time_utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
