@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <tuple>
 #include <filesystem>
 #include "hdr/sqlite3.h"
 #include "hdr/sqlite_modern_cpp.h"
@@ -20,6 +21,9 @@ public:
 
     void create_filtered_sets_database(const string& new_db_path, string pre_season_date, string post_season_date, int minimum_entrants, const vector<string>& special_tournament_keys);
     void add_ranking_columns();
+
+    vector<tuple<string, string, double, double, double>> fetch_all_players();
+    vector<tuple<string, string, string>> fetch_all_sets();
 
 private:
     sqlite::database db;

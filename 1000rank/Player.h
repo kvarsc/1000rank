@@ -6,6 +6,7 @@ using namespace std;
 class Player
 {
 public:
+	Player() : id(""), tag(""), ranking_score(0.0), uncertainty(0.0), volatility(0.0), del(0.0), delold(0.0), vel(0.0) {}
 	Player (string id, string tag, double ranking_score, double uncertainty, double volatility) : 
 		id(id), tag(tag), ranking_score(ranking_score), uncertainty(uncertainty), volatility(volatility), del(0.0), delold(0.0), vel(0.0) {}
 
@@ -26,6 +27,9 @@ public:
 	void set_del(double new_del) { del = new_del; }
 	void set_delold(double new_delold) { delold = new_delold; }
 	void set_vel(double new_vel) { vel = new_vel; }
+
+	// Simple expressions
+	void zero_del() { del = 0.0; }
 private:
 	// ID info
 	string id;

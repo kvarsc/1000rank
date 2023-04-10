@@ -40,16 +40,16 @@ int main()
 	}
 
     // Load the database fields
-    string repo_owner = config["repo_owner"];
-    string repo_name = config["repo_name"];
-    string asset_name = config["asset_name"];
-    string local_file_path = config["local_file_path"];
-    string input_db_file_path = config["input_db_file_path"];
-    string output_db_file_path = config["output_db_file_path"];
-    string filtered_db_file_path = config["filtered_db_file_path"];
-    string pre_season_date = config["pre_season_date"];
-    string post_season_date = config["post_season_date"];
-    int minimum_entrants = config["minimum_entrants"];
+    string repo_owner = config["database"]["repo_owner"];
+    string repo_name = config["database"]["repo_name"];
+    string asset_name = config["database"]["asset_name"];
+    string local_file_path = config["database"]["local_file_path"];
+    string input_db_file_path = config["database"]["input_db_file_path"];
+    string output_db_file_path = config["database"]["output_db_file_path"];
+    string filtered_db_file_path = config["database"]["filtered_db_file_path"];
+    string pre_season_date = config["database"]["pre_season_date"];
+    string post_season_date = config["database"]["post_season_date"];
+    int minimum_entrants = config["database"]["minimum_entrants"];
 
     // Load the special tournaments
     vector<string> special_tournament_keys;
@@ -65,18 +65,20 @@ int main()
 	}
 
     // Load the parameters of the FIRE algorithm
-    double force_threshold = config["force_threshold"];
-    int nmin = config["nmin"];
-    double finc = config["finc"];
-    double fdec = config["fdec"];
-    double astart = config["astart"];
-    double fa = config["fa"];
-    double dtmax = config["dtmax"];
-    int dtmax_freq = config["dtmax_freq"];
+    double sig = config["algorithm_parameters"]["sig"];
+    double force_threshold = config["algorithm_parameters"]["force_threshold"];
+    int nmin = config["algorithm_parameters"]["nmin"];
+    double finc = config["algorithm_parameters"]["finc"];
+    double fdec = config["algorithm_parameters"]["fdec"];
+    double astart = config["algorithm_parameters"]["astart"];
+    double fa = config["algorithm_parameters"]["fa"];
+    double dtmax = config["algorithm_parameters"]["dtmax"];
+    int dtmax_freq = config["algorithm_parameters"]["dtmax_freq"];
 
     // Load the fields for which actions to take
-    bool reextract_db = config["reextract_db"];
-    bool filter_db = config["filter_db"];
+    bool reextract_db = config["actions"]["reextract_db"];
+    bool filter_db = config["actions"]["filter_db"];
+    bool compute_rankings = config["actions"]["compute_rankings"];
 
     // Create a DatabaseDownloader instance
     DatabaseDownloader db_downloader;
@@ -110,9 +112,10 @@ int main()
 	}
 
     // Create the ranking system
-    RankingSystem ranking_system(force_threshold, nmin, finc, fdec, astart, fa, dtmax, dtmax_freq);
+    RankingSystem ranking_system(sig, force_threshold, nmin, finc, fdec, astart, fa, dtmax, dtmax_freq);
 
-    ranking_system.print_players_size();
+    // Load all the players and matches into the ranking system
+    ranking_system.load_all(db_manager);
 
     cout << "Program complete!" << endl;
     return 0;

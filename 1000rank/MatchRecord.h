@@ -13,7 +13,7 @@ public:
 	void add_win() { ++wins; }
 	void add_loss() { ++losses; }
 
-	// IMPORTANT: this function converts wins and losses to forces
+	// IMPORTANT: this function converts wins and losses to force values
 	// You can adjust this function to change the way forces are calculated!
 	void calc_forces();
 

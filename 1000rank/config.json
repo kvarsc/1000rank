@@ -1,14 +1,17 @@
 {
-  "repo_owner" : "smashdata",
-  "repo_name" : "ThePlayerDatabase",
-  "asset_name" : "ultimate_player_database.zip",
-  "local_file_path" : "",
-  "input_db_file_path" : "ultimate_player_database/ultimate_player_database.db",
-  "output_db_file_path" : "ultimate_player_database.db",
-  "filtered_db_file_path" : "filtered_database.db",
-  "pre_season_date" : "2022-12-07",
-  "post_season_date" : "2023-12-07",
-  "minimum_entrants" : 51,
+  "database" :
+  {
+    "repo_owner" : "smashdata",
+    "repo_name" : "ThePlayerDatabase",
+    "asset_name" : "ultimate_player_database.zip",
+    "local_file_path" : "",
+    "input_db_file_path" : "ultimate_player_database/ultimate_player_database.db",
+    "output_db_file_path" : "ultimate_player_database.db",
+    "filtered_db_file_path" : "filtered_database.db",
+    "pre_season_date" : "2022-12-07",
+    "post_season_date" : "2023-12-07",
+    "minimum_entrants" : 51
+  },
   "special_tournaments": [
     {
       "id": "scuffed-world-tour__ultimate-singles",
@@ -21,14 +24,22 @@
       "end": 1679900340
     }
   ],
-  "force_threshold" : 1e-10,
-  "nmin" : 5,
-  "finc" : 1.1,
-  "fdec": 0.5,
-  "astart" : 0.1,
-  "fa" : 0.99,
-  "dtmax" : 0.005,
-  "dtmax_freq" : 100,
-  "reextract_db" : false,
-  "filter_db" : false
+  "algorithm_parameters" :
+  {
+	"sig" : 0.0001,
+    "force_threshold" : 1e-10,
+    "nmin" : 5,
+    "finc" : 1.1,
+    "fdec": 0.5,
+    "astart" : 0.1,
+    "fa" : 0.99,
+    "dtmax" : 0.005,
+    "dtmax_freq" : 100
+  },
+  "actions" :
+  {
+    "reextract_db" : false,
+    "filter_db" : false,
+	"compute_rankings" : true
+  }
 }

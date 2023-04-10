@@ -124,6 +124,28 @@ void DatabaseManager::add_ranking_columns()
     db << "ALTER TABLE players ADD COLUMN volatility REAL DEFAULT 0.0;";
 }
 
+vector<tuple<string, string, double, double, double>> DatabaseManager::fetch_all_players()
+{
+	vector<tuple<string, string, double, double, double>> players;
+
+    db << "SELECT player_id, tag, ranking_score, uncertainty, volatility FROM players" >> [&](string id, string tag, double ranking_score, double uncertainty, double volatility)
+    {
+        players.emplace_back(id, tag, ranking_score, uncertainty, volatility);
+    };
+
+	return players;
+}
+
+vector<tuple<string, string, string>> DatabaseManager::fetch_all_sets()
+{
+	vector<tuple<string, string, string>> sets;
+    db << "SELECT p1_id, p2_id, winner_id FROM sets" >> [&](string p1_id, string p2_id, string winner_id)
+    {
+		sets.emplace_back(p1_id, p2_id, winner_id);
+	};
+	return sets;
+}
+
 string DatabaseManager::special_tournament_keys_string(const vector<string>& special_tournament_keys) {
     string result;
     for (const auto& key : special_tournament_keys) {
