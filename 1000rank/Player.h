@@ -28,8 +28,14 @@ public:
 	void set_delold(double new_delold) { delold = new_delold; }
 	void set_vel(double new_vel) { vel = new_vel; }
 
-	// Simple expressions
+	// Simple expressions for ranking calculation
 	void zero_del() { del = 0.0; }
+	void zero_vel() { vel = 0.0; }
+	void add_to_del(double addend) { del += addend; }
+	void move_ranking_score(double sig) { ranking_score += sig * vel + 0.5 * sig * sig * del; }
+	void store_del() { delold = del; }
+	void calc_vel(double sig) { vel += 0.5 * sig * (del + delold); }
+	void fire_vel(double a, double delnorm, double velnorm) { vel = (1.0 - a) * vel + a * del * velnorm / delnorm; }
 private:
 	// ID info
 	string id;

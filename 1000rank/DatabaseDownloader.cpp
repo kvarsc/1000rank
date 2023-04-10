@@ -8,7 +8,7 @@ DatabaseDownloader::~DatabaseDownloader()
 {
 }
 
-bool DatabaseDownloader::check_and_download_database(const string& repo_owner, const string& repo_name, const string& asset_name, const string& local_file_path, const string& input_db_file_path, const string& output_db_file_path, const bool& reextract_db)
+int DatabaseDownloader::check_and_download_database(const string& repo_owner, const string& repo_name, const string& asset_name, const string& local_file_path, const string& input_db_file_path, const string& output_db_file_path, const bool& reextract_db)
 {
 	// Step 1: Send an HTTP GET request to the API endpoint for the repository's releases
 	string releases_url = "https://api.github.com/repos/" + repo_owner + "/" + repo_name + "/releases";
@@ -55,7 +55,14 @@ bool DatabaseDownloader::check_and_download_database(const string& repo_owner, c
 	{
 		if (reextract_db)
 		{
-			return extract_database(local_file_with_path, input_db_file_path, output_db_file_path);
+			if (extract_database(local_file_with_path, input_db_file_path, output_db_file_path))
+			{
+				return 2;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
@@ -102,7 +109,14 @@ bool DatabaseDownloader::check_and_download_database(const string& repo_owner, c
 
 	cout << endl;
 
-	return extract_database(local_file_with_path, input_db_file_path, output_db_file_path);
+	if (extract_database(local_file_with_path, input_db_file_path, output_db_file_path))
+	{
+		return 2;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool DatabaseDownloader::extract_database(const string& zip_file_path, const string& input_file_path, const string& output_file_path) {

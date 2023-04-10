@@ -34,12 +34,13 @@
     "astart" : 0.1,
     "fa" : 0.99,
     "dtmax" : 0.005,
+	"dtmax_inc" : 1.1,
     "dtmax_freq" : 100
   },
   "actions" :
   {
     "reextract_db" : false,
-    "filter_db" : false,
-	"compute_rankings" : true
+    "refilter_db" : false,
+	"recompute_rankings" : false
   }
 }

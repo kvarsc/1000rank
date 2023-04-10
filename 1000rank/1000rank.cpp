@@ -73,18 +73,20 @@ int main()
     double astart = config["algorithm_parameters"]["astart"];
     double fa = config["algorithm_parameters"]["fa"];
     double dtmax = config["algorithm_parameters"]["dtmax"];
+    double dtmax_inc = config["algorithm_parameters"]["dtmax_inc"];
     int dtmax_freq = config["algorithm_parameters"]["dtmax_freq"];
 
     // Load the fields for which actions to take
     bool reextract_db = config["actions"]["reextract_db"];
-    bool filter_db = config["actions"]["filter_db"];
-    bool compute_rankings = config["actions"]["compute_rankings"];
+    bool refilter_db = config["actions"]["refilter_db"];
+    bool recompute_rankings = config["actions"]["recompute_rankings"];
 
     // Create a DatabaseDownloader instance
     DatabaseDownloader db_downloader;
 
     // Check if the database needs to be downloaded
-    if (db_downloader.check_and_download_database(repo_owner, repo_name, asset_name, local_file_path, input_db_file_path, output_db_file_path, reextract_db))
+    int db_downloaded;
+    if (db_downloaded = db_downloader.check_and_download_database(repo_owner, repo_name, asset_name, local_file_path, input_db_file_path, output_db_file_path, reextract_db))
     {
 		cout << "Database is downloaded/up-to-date." << endl;
 	}
@@ -92,6 +94,8 @@ int main()
     {
 		cout << "Error downloading database." << endl;
 	}
+
+    bool filter_db = (refilter_db || (db_downloaded == 2));
 
     // If the database needs to be filtered, create a DatabaseManager instance and filter the database
     if (filter_db)
@@ -112,10 +116,18 @@ int main()
 	}
 
     // Create the ranking system
-    RankingSystem ranking_system(sig, force_threshold, nmin, finc, fdec, astart, fa, dtmax, dtmax_freq);
+    RankingSystem ranking_system(sig, force_threshold, nmin, finc, fdec, astart, fa, dtmax, dtmax_inc, dtmax_freq);
 
     // Load all the players and matches into the ranking system
     ranking_system.load_all(db_manager);
+
+    // If the rankings need to be computed, compute them
+    // And then write the rankings to the database
+    if (recompute_rankings || filter_db)
+    {
+		ranking_system.compute_rankings();
+        //ranking_system.write_rankings(db_manager);
+    }
 
     cout << "Program complete!" << endl;
     return 0;

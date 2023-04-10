@@ -93,8 +93,7 @@ void RankingSystem::calc_forces_on_all_players()
 	{
 		string player_id = player_match_history.first;
 		double player_ranking_score = players[player_id].get_ranking_score();
-	}/*
-		double player_del = -player_ranking_score / max_ranking_score; // minor attendance bonus
+		players[player_id].add_to_del(-player_ranking_score / max_ranking_score); // minor attendance bonus
 
 		// Iterate through all opponents and calculate forces on the player
 		for (const auto& opponent_match_record : player_match_history.second)
@@ -102,22 +101,121 @@ void RankingSystem::calc_forces_on_all_players()
 			string opponent_id = opponent_match_record.first;
 			double opponent_ranking_score = players[opponent_id].get_ranking_score();
 			double win_force = opponent_match_record.second.get_win_force();
-			double loss_force = opponent_match_record.second.get_loss_force();
 
-			// Calculate the force on the player from this opponent
+			// Calculate the win force on the player from this opponent
+			// Add it to the player's del and subtract it from the opponent's del
 			double net_force_wins = calc_net_force(win_force, opponent_ranking_score, player_ranking_score);
-			double net_force_losses = calc_net_force(loss_force, player_ranking_score, opponent_ranking_score);
-			player_del += net_force_wins - net_force_losses;
+			players[player_id].add_to_del(net_force_wins);
+			players[opponent_id].add_to_del(-net_force_wins);
 		}
-
-		players[player_id].set_del(player_del);
 	}
-	*/
 }
 
-double calc_net_force(double force, double score1, double score2)
+double RankingSystem::calc_net_force(double force, double score1, double score2)
 {
 	if (force <= 0) return 0;
 
 	return score1 > score2 ? force : std::max(0.0, force * (score1 - score2 + 1));
+}
+
+void RankingSystem::compute_rankings()
+{
+	// Declare initial variables for the ranking loop
+	int steps = 0;
+	int steps_since_nonpos_pe = 0;
+	double a = astart;
+
+	// Calculate the initial forces on all players
+	calc_forces_on_all_players();
+
+	// Main ranking loop
+	while (deldel() > force_threshold)
+	{
+		// Increase dtmax every dtmax_freq steps
+		// And print deldel and dtmax in scientific notation
+		if (steps % dtmax_freq == 0)
+		{
+			dtmax *= dtmax_inc;
+			cout << "deldel: " << scientific << deldel() << " dtmax: " << dtmax << endl;
+		}
+
+		// Move ranking scores in the direction of del and vel
+		for (auto& player : players)
+			player.second.move_ranking_score(sig);
+
+		// Store del into delold for each player
+		for (auto& player : players)
+			player.second.store_del();
+
+		// Calculate the new forces on all players
+		calc_forces_on_all_players();
+
+		// Calculate the new velocities for each player
+		for (auto& player : players)
+			player.second.calc_vel(sig);
+
+		// Calculate pe, the dot product of del and vel
+		double pe = delvel();
+
+		// Calculate the norms of del and vel
+		double delnorm = sqrt(deldel());
+		double velnorm = sqrt(velvel());
+
+		// Set vel in accordance with FIRE
+		for (auto& player : players)
+			player.second.fire_vel(a, delnorm, velnorm);
+
+		// Change a and sig depending on pe's sign
+		if (pe > 0)
+		{
+			steps_since_nonpos_pe++;
+			if (steps_since_nonpos_pe > nmin)
+			{
+				a = a * fa;
+				sig = std::min(sig * finc, dtmax);
+			}
+		}
+		else
+		{
+			steps_since_nonpos_pe = 0;
+			a = astart;
+			sig = sig * fdec;
+			// Also set velocities to zero
+			for (auto& player : players)
+				player.second.zero_vel();
+		}
+
+		// Increase the step counter
+		steps++;
+	}
+}
+
+double RankingSystem::deldel()
+{
+	double sum = 0.0;
+	for (const auto& player : players)
+	{
+		sum += player.second.get_del() * player.second.get_del();
+	}
+	return sum;
+}
+
+double RankingSystem::delvel()
+{
+	double sum = 0.0;
+	for (const auto& player : players)
+	{
+		sum += player.second.get_del() * player.second.get_vel();
+	}
+	return sum;
+}
+
+double RankingSystem::velvel()
+{
+	double sum = 0.0;
+	for (const auto& player : players)
+	{
+		sum += player.second.get_vel() * player.second.get_vel();
+	}
+	return sum;
 }

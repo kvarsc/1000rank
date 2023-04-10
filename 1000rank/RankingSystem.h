@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cmath>
 #include <algorithm>
 #include <string>
 #include <unordered_map>
@@ -13,8 +14,8 @@ using namespace std;
 class RankingSystem
 {
 public:
-	RankingSystem(double sig, double force_threshold, int nmin, double finc, double fdec, double astart, double fa, double dtmax, int dtmax_freq) :
-		sig(sig), force_threshold(force_threshold), nmin(nmin), finc(finc), fdec(fdec), astart(astart), fa(fa), dtmax(dtmax), dtmax_freq(dtmax_freq) {}
+	RankingSystem(double sig, double force_threshold, int nmin, double finc, double fdec, double astart, double fa, double dtmax, double dtmax_inc, int dtmax_freq) :
+		sig(sig), force_threshold(force_threshold), nmin(nmin), finc(finc), fdec(fdec), astart(astart), fa(fa), dtmax(dtmax), dtmax_inc(dtmax_inc), dtmax_freq(dtmax_freq) {}
 
 	void load_players(DatabaseManager& db_manager);
 	void load_match_history(DatabaseManager& db_manager);
@@ -24,12 +25,18 @@ public:
 
 	pair<int, int> get_match_history_size();
 
-	// Ranking algorithm methods
+	// Ranking algorithm force method
 	// IMPORTANT: this function computes forces as a function of wins and losses
 	// You can adjust this function to change the way forces are calculated!
 	void calc_forces_on_all_players();
 	double calc_net_force(double force, double score1, double score2);
 
+	// Other ranking algorithm methods
+	// Main method minimizes the rankings' energy function using FIRE
+	void compute_rankings();
+	double deldel();
+	double delvel();
+	double velvel();
 private:
 	unordered_map<string, Player> players;
 	unordered_map<string, unordered_map<string, MatchRecord>> match_history;
@@ -43,6 +50,7 @@ private:
 	double astart;
 	double fa;
 	double dtmax;
+	double dtmax_inc;
 	int dtmax_freq;
 };
 
