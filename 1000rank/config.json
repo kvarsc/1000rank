@@ -42,5 +42,5 @@
     "reextract_db" : false,
     "refilter_db" : false,
     "recompute_rankings" : false
-	}
+  }
 }
