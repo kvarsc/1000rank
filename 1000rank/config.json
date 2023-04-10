@@ -26,7 +26,7 @@
   ],
   "algorithm_parameters" :
   {
-	"sig" : 0.0001,
+    "sig" : 0.0001,
     "force_threshold" : 1e-10,
     "nmin" : 5,
     "finc" : 1.1,
@@ -34,13 +34,13 @@
     "astart" : 0.1,
     "fa" : 0.99,
     "dtmax" : 0.005,
-	"dtmax_inc" : 1.1,
+    "dtmax_inc" : 1.1,
     "dtmax_freq" : 100
   },
   "actions" :
   {
     "reextract_db" : false,
     "refilter_db" : false,
-	"recompute_rankings" : false
-  }
+    "recompute_rankings" : false
+	}
 }
