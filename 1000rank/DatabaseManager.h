@@ -1,11 +1,13 @@
 #pragma once
 #include <iostream>
+#include <format>
 #include <string>
 #include <vector>
 #include <tuple>
 #include <filesystem>
 #include "hdr/sqlite3.h"
 #include "hdr/sqlite_modern_cpp.h"
+#include "Player.h"
 
 using namespace std;
 
@@ -24,6 +26,8 @@ public:
 
     vector<tuple<string, string, double, double, double>> fetch_all_players();
     vector<tuple<string, string, string>> fetch_all_sets();
+
+    void update_player_ranking_values(unordered_map<string, Player>& players);
 
 private:
     sqlite::database db;

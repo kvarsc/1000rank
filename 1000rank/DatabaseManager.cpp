@@ -116,12 +116,15 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
 
 void DatabaseManager::add_ranking_columns()
 {
-    cout << "Adding ranking columns to database..." << endl;
+    cout << "Adding ranking columns (and index) to database..." << endl;
 
     // Add the ranking columns to the 'players' table
     db << "ALTER TABLE players ADD COLUMN ranking_score REAL DEFAULT 0.0;";
     db << "ALTER TABLE players ADD COLUMN uncertainty REAL DEFAULT 0.0;";
     db << "ALTER TABLE players ADD COLUMN volatility REAL DEFAULT 0.0;";
+
+    // Create an index on the 'player_id' column of the 'players' table
+    db << "CREATE INDEX player_id_index ON players (player_id);";
 }
 
 vector<tuple<string, string, double, double, double>> DatabaseManager::fetch_all_players()
@@ -144,6 +147,20 @@ vector<tuple<string, string, string>> DatabaseManager::fetch_all_sets()
 		sets.emplace_back(p1_id, p2_id, winner_id);
 	};
 	return sets;
+}
+
+void DatabaseManager::update_player_ranking_values(unordered_map<string, Player>& players)
+{
+    string query = "UPDATE players SET ranking_score = CASE player_id ";
+    for (const auto &[id, player] : players) {
+		query += "WHEN '" + id + "' THEN " + format("{:9f}", player.get_ranking_score()) + " ";
+	}
+    query += "ELSE ranking_score END, uncertainty = CASE player_id ";
+    for (const auto& [id, player] : players) {
+        query += "WHEN '" + id + "' THEN " + format("{:9f}", player.get_uncertainty()) + " ";
+    }
+    query += "ELSE uncertainty END;";
+    db << query;
 }
 
 string DatabaseManager::special_tournament_keys_string(const vector<string>& special_tournament_keys) {

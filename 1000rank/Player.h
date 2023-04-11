@@ -28,14 +28,18 @@ public:
 	void set_delold(double new_delold) { delold = new_delold; }
 	void set_vel(double new_vel) { vel = new_vel; }
 
-	// Simple expressions for ranking calculation
+	// Simple expressions for rank/uncert/vol calculation
 	void zero_del() { del = 0.0; }
 	void zero_vel() { vel = 0.0; }
+	void zero_ranking_score() { ranking_score = 0.0; }
+	void zero_uncertainty() { uncertainty = 0.0; }
+	void zero_volatility() { volatility = 0.0; }
 	void add_to_del(double addend) { del += addend; }
 	void move_ranking_score(double sig) { ranking_score += sig * vel + 0.5 * sig * sig * del; }
 	void store_del() { delold = del; }
 	void calc_vel(double sig) { vel += 0.5 * sig * (del + delold); }
 	void fire_vel(double a, double delnorm, double velnorm) { vel = (1.0 - a) * vel + a * del * velnorm / delnorm; }
+	void add_to_uncertainty(double addend) { uncertainty += addend; }
 private:
 	// ID info
 	string id;

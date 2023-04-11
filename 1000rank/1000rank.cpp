@@ -76,6 +76,9 @@ int main()
     double dtmax_inc = config["algorithm_parameters"]["dtmax_inc"];
     int dtmax_freq = config["algorithm_parameters"]["dtmax_freq"];
 
+    // Load other parameters of the ranking system
+    double scaling_factor = config["ranking_system_parameters"]["scaling_factor"];
+
     // Load the fields for which actions to take
     bool reextract_db = config["actions"]["reextract_db"];
     bool refilter_db = config["actions"]["refilter_db"];
@@ -96,6 +99,7 @@ int main()
 	}
 
     bool filter_db = (refilter_db || (db_downloaded == 2));
+    bool compute_rankings = (recompute_rankings || filter_db);
 
     // If the database needs to be filtered, create a DatabaseManager instance and filter the database
     if (filter_db)
@@ -116,18 +120,30 @@ int main()
 	}
 
     // Create the ranking system
-    RankingSystem ranking_system(sig, force_threshold, nmin, finc, fdec, astart, fa, dtmax, dtmax_inc, dtmax_freq);
+    RankingSystem ranking_system(sig, force_threshold, nmin, finc, fdec, astart, fa, dtmax, dtmax_inc, dtmax_freq, scaling_factor);
 
     // Load all the players and matches into the ranking system
     ranking_system.load_all(db_manager);
 
     // If the rankings need to be computed, compute them
-    // And then write the rankings to the database
-    if (recompute_rankings || filter_db)
+    if (compute_rankings)
     {
 		ranking_system.compute_rankings();
-        //ranking_system.write_rankings(db_manager);
     }
+
+    // Sort players by ranking and store the max ranking score
+    ranking_system.sort_players_by_ranking();
+
+    // If the rankings needed to be computed, compute uncertanties too
+    // And store ranking and uncertainties in the database
+    if (compute_rankings)
+    {
+        ranking_system.compute_uncertainties();
+        ranking_system.store_rankings(db_manager);
+    }
+
+    // Print the top 10 players
+    ranking_system.print_top_players(10);
 
     cout << "Program complete!" << endl;
     return 0;

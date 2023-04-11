@@ -5,6 +5,8 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include <vector>
+#include <functional>
 #include "DatabaseManager.h"
 #include "Player.h"
 #include "MatchRecord.h"
@@ -14,8 +16,8 @@ using namespace std;
 class RankingSystem
 {
 public:
-	RankingSystem(double sig, double force_threshold, int nmin, double finc, double fdec, double astart, double fa, double dtmax, double dtmax_inc, int dtmax_freq) :
-		sig(sig), force_threshold(force_threshold), nmin(nmin), finc(finc), fdec(fdec), astart(astart), fa(fa), dtmax(dtmax), dtmax_inc(dtmax_inc), dtmax_freq(dtmax_freq) {}
+	RankingSystem(double sig, double force_threshold, int nmin, double finc, double fdec, double astart, double fa, double dtmax, double dtmax_inc, int dtmax_freq, double scaling_factor) :
+		sig(sig), force_threshold(force_threshold), nmin(nmin), finc(finc), fdec(fdec), astart(astart), fa(fa), dtmax(dtmax), dtmax_inc(dtmax_inc), dtmax_freq(dtmax_freq), scaling_factor(scaling_factor) {}
 
 	void load_players(DatabaseManager& db_manager);
 	void load_match_history(DatabaseManager& db_manager);
@@ -37,9 +39,25 @@ public:
 	double deldel();
 	double delvel();
 	double velvel();
+
+	// Sort players by ranking after ranking algorithm is done
+	void sort_players_by_ranking();
+
+	// Store the max ranking score after you've sorted the players
+	void store_max_ranking_score();
+
+	// Compute the uncertainties
+	void compute_uncertainties();
+
+	// Store ranking scores in database after ranking algorithm is done
+	void store_rankings(DatabaseManager& db_manager);
+
+	// Print the top players
+	void print_top_players(int n);
 private:
 	unordered_map<string, Player> players;
 	unordered_map<string, unordered_map<string, MatchRecord>> match_history;
+	vector<reference_wrapper<Player>> sorted_players;
 
 	// FIRE algorithm parameters
 	double sig;
@@ -52,5 +70,8 @@ private:
 	double dtmax;
 	double dtmax_inc;
 	int dtmax_freq;
-};
 
+	// Other ranking system parameters
+	double max_ranking_score = 1.0;
+	double scaling_factor;
+};

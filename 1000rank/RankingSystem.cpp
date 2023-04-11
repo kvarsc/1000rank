@@ -120,6 +120,16 @@ double RankingSystem::calc_net_force(double force, double score1, double score2)
 
 void RankingSystem::compute_rankings()
 {
+	cout << "Computing rankings..." << endl;
+
+	// Zero out ranking scores, uncertainties, and volatilities
+	for (auto& player : players)
+	{
+		player.second.zero_ranking_score();
+		player.second.zero_uncertainty();
+		player.second.zero_volatility();
+	}
+
 	// Declare initial variables for the ranking loop
 	int steps = 0;
 	int steps_since_nonpos_pe = 0;
@@ -218,4 +228,72 @@ double RankingSystem::velvel()
 		sum += player.second.get_vel() * player.second.get_vel();
 	}
 	return sum;
+}
+
+void RankingSystem::sort_players_by_ranking()
+{
+	cout << "Sorting players by ranking..." << endl;
+
+	sorted_players.clear();
+
+	for (auto &[id, player] : players)
+		sorted_players.push_back(ref(player));
+
+	sort(sorted_players.begin(), sorted_players.end(), [](const auto& a, const auto& b) {
+		return a.get().get_ranking_score() > b.get().get_ranking_score();
+	});
+
+	// Store the maximum ranking score
+	store_max_ranking_score();
+}
+
+void RankingSystem::store_max_ranking_score()
+{
+	max_ranking_score = sorted_players[0].get().get_ranking_score();
+}
+
+void RankingSystem::compute_uncertainties()
+{
+	cout << "Computing uncertainties..." << endl;
+	// Calculate the uncertainty for each player
+	for (const auto& player_match_history : match_history)
+	{
+		string player_id = player_match_history.first;
+		double player_ranking_score = players[player_id].get_ranking_score();
+		players[player_id].add_to_uncertainty( 0.5 / (2 * max_ranking_score) ); // minor attendance bonus
+
+		// Iterate through all opponents and calculate uncertainties on the player
+		for (const auto& opponent_match_record : player_match_history.second)
+		{
+			string opponent_id = opponent_match_record.first;
+			double opponent_ranking_score = players[opponent_id].get_ranking_score();
+			double win_force = opponent_match_record.second.get_win_force();
+
+			// Calculate the win force's contribution to the uncertainty
+			if (player_ranking_score > opponent_ranking_score)
+			{
+				players[player_id].add_to_uncertainty(win_force);
+				players[opponent_id].add_to_uncertainty(win_force);
+			}
+		}
+	}
+}
+
+void RankingSystem::store_rankings(DatabaseManager& db_manager)
+{
+	cout << "Storing rankings..." << endl;
+	db_manager.update_player_ranking_values(players);
+}
+
+void RankingSystem::print_top_players(int n)
+{
+	cout << "Printing top " << n << " players..." << endl;
+	for (int i = 0; i < n; i++)
+	{
+		double ranking_score = sorted_players[i].get().get_ranking_score();
+		double uncertainty = sorted_players[i].get().get_uncertainty();
+		ranking_score = ranking_score * ( scaling_factor / max_ranking_score );
+		uncertainty = ( 1.0 / uncertainty ) * ( scaling_factor / max_ranking_score );
+		cout << i + 1 << ". " << sorted_players[i].get().get_tag() << " (" << ranking_score << "; " << uncertainty << ")" << endl;
+	}
 }

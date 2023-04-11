@@ -366,3 +366,6 @@ FodyWeavers.xsd
 ultimate_player_database*
 *.zip
 *.db
+
+# my personal notes
+nextsteps.txt
