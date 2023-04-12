@@ -146,7 +146,7 @@ void RankingSystem::compute_rankings()
 		if (steps % dtmax_freq == 0)
 		{
 			dtmax *= dtmax_inc;
-			cout << "deldel: " << scientific << deldel() << " dtmax: " << dtmax << endl;
+			cout << "deldel: " << scientific << deldel() << " dtmax: " << dtmax << fixed << endl;
 		}
 
 		// Move ranking scores in the direction of del and vel
@@ -244,12 +244,11 @@ void RankingSystem::sort_players_by_ranking()
 	});
 
 	// Store the maximum ranking score
-	store_max_ranking_score();
-}
-
-void RankingSystem::store_max_ranking_score()
-{
 	max_ranking_score = sorted_players[0].get().get_ranking_score();
+
+	// Store rankings in player objects
+	for (int i = 0; i < sorted_players.size(); i++)
+		sorted_players[i].get().set_rank(i + 1);
 }
 
 void RankingSystem::compute_uncertainties()

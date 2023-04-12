@@ -19,6 +19,11 @@ public:
 	RankingSystem(double sig, double force_threshold, int nmin, double finc, double fdec, double astart, double fa, double dtmax, double dtmax_inc, int dtmax_freq, double scaling_factor) :
 		sig(sig), force_threshold(force_threshold), nmin(nmin), finc(finc), fdec(fdec), astart(astart), fa(fa), dtmax(dtmax), dtmax_inc(dtmax_inc), dtmax_freq(dtmax_freq), scaling_factor(scaling_factor) {}
 
+	// Getters
+	unordered_map<string, Player> get_players() const { return players; }
+	unordered_map<string, unordered_map<string, MatchRecord>> get_match_history() const { return match_history; }
+	vector<reference_wrapper<Player>> get_sorted_players() const { return sorted_players; }
+
 	void load_players(DatabaseManager& db_manager);
 	void load_match_history(DatabaseManager& db_manager);
 	void add_match_record(const string& p1_id, const string& p2_id, const string& winner_id);
@@ -41,10 +46,9 @@ public:
 	double velvel();
 
 	// Sort players by ranking after ranking algorithm is done
+	// And store the max ranking score
+	// And store ranks in player objects
 	void sort_players_by_ranking();
-
-	// Store the max ranking score after you've sorted the players
-	void store_max_ranking_score();
 
 	// Compute the uncertainties
 	void compute_uncertainties();
