@@ -37,14 +37,18 @@
     "dtmax_inc" : 1.1,
     "dtmax_freq" : 100
   },
-  "ranking_system_parameters" :
+  "html_output" :
   {
-    "scaling_factor" : 1000.0
+    "scaling_factor" : 1000.0,
+	"apply_scaling" : true,
+	"html_template_file_path" : "ranking_template.html",
+	"html_output_file_path" : "2023rankings.html"
   },
   "actions" :
   {
     "reextract_db" : false,
     "refilter_db" : false,
-    "recompute_rankings" : false
+    "recompute_rankings" : false,
+	"regenerate_html" : true
   }
 }

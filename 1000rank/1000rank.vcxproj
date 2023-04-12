@@ -99,7 +99,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cpr.lib;sqlite3.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cpr.lib;sqlite3.lib;mstch.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,7 +119,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cpr.lib;sqlite3.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cpr.lib;sqlite3.lib;mstch.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -135,7 +135,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cpr.lib;sqlite3.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cpr.lib;sqlite3.lib;mstch.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -155,7 +155,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cpr.lib;sqlite3.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cpr.lib;sqlite3.lib;mstch.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -164,6 +164,7 @@
     <ClCompile Include="DatabaseManager.cpp" />
     <ClCompile Include="hdr\shell.c" />
     <ClCompile Include="hdr\sqlite3.c" />
+    <ClCompile Include="HtmlOutputGenerator.cpp" />
     <ClCompile Include="MatchRecord.cpp" />
     <ClCompile Include="miniz.c" />
     <ClCompile Include="Player.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="hdr\sqlite_modern_cpp\utility\function_traits.h" />
     <ClInclude Include="hdr\sqlite_modern_cpp\utility\uncaught_exceptions.h" />
     <ClInclude Include="hdr\sqlite_modern_cpp\utility\utf16_utf8.h" />
+    <ClInclude Include="HtmlOutputGenerator.h" />
     <ClInclude Include="MatchRecord.h" />
     <ClInclude Include="miniz.h" />
     <ClInclude Include="Player.h" />

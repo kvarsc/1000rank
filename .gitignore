@@ -367,5 +367,9 @@ ultimate_player_database*
 *.zip
 *.db
 
+# html files except for ranking template
+*.html
+!ranking_template.html
+
 # my personal notes
 nextsteps.txt

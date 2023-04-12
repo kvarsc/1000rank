@@ -8,6 +8,7 @@
 #include "DatabaseDownloader.h"
 #include "DatabaseManager.h"
 #include "RankingSystem.h"
+#include "HtmlOutputGenerator.h"
 
 using json = nlohmann::json;
 using namespace std;
@@ -76,13 +77,17 @@ int main()
     double dtmax_inc = config["algorithm_parameters"]["dtmax_inc"];
     int dtmax_freq = config["algorithm_parameters"]["dtmax_freq"];
 
-    // Load other parameters of the ranking system
-    double scaling_factor = config["ranking_system_parameters"]["scaling_factor"];
+    // Load html output fields
+    double scaling_factor = config["html_output"]["scaling_factor"];
+    bool apply_scaling = config["html_output"]["apply_scaling"];
+    string html_template_file_path = config["html_output"]["html_template_file_path"];
+    string html_output_file_path = config["html_output"]["html_output_file_path"];
 
     // Load the fields for which actions to take
     bool reextract_db = config["actions"]["reextract_db"];
     bool refilter_db = config["actions"]["refilter_db"];
     bool recompute_rankings = config["actions"]["recompute_rankings"];
+    bool regenerate_html = config["actions"]["regenerate_html"];
 
     // Create a DatabaseDownloader instance
     DatabaseDownloader db_downloader;
@@ -98,8 +103,10 @@ int main()
 		cout << "Error downloading database." << endl;
 	}
 
+    // Create booleans for which actions to take
     bool filter_db = (refilter_db || (db_downloaded == 2));
     bool compute_rankings = (recompute_rankings || filter_db);
+    bool generate_html = (regenerate_html || compute_rankings);
 
     // If the database needs to be filtered, create a DatabaseManager instance and filter the database
     if (filter_db)
@@ -144,6 +151,16 @@ int main()
 
     // Print the top 10 players
     ranking_system.print_top_players(10);
+
+    // Get sorted players
+    vector<reference_wrapper<Player>> sorted_players = ranking_system.get_sorted_players();
+
+    // If the html needs to be generated, generate it
+    if (generate_html)
+    {
+        HtmlOutputGenerator html_generator(html_template_file_path, html_output_file_path);
+		html_generator.generate_html(sorted_players[0].get().get_tag());
+	}
 
     cout << "Program complete!" << endl;
     return 0;
