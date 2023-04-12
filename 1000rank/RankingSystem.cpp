@@ -269,7 +269,7 @@ void RankingSystem::compute_uncertainties()
 			double win_force = opponent_match_record.second.get_win_force();
 
 			// Calculate the win force's contribution to the uncertainty
-			if (player_ranking_score > opponent_ranking_score)
+			if ( ( player_ranking_score > opponent_ranking_score ) && ( ( player_ranking_score - opponent_ranking_score ) < 1.0 ) )
 			{
 				players[player_id].add_to_uncertainty(win_force);
 				players[opponent_id].add_to_uncertainty(win_force);
