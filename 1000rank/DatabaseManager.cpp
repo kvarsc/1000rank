@@ -153,13 +153,17 @@ void DatabaseManager::update_player_ranking_values(unordered_map<string, Player>
 {
     string query = "UPDATE players SET ranking_score = CASE player_id ";
     for (const auto &[id, player] : players) {
-		query += "WHEN '" + id + "' THEN " + format("{:9f}", player.get_ranking_score()) + " ";
+		query += "WHEN '" + id + "' THEN " + format("{:.9f}", player.get_ranking_score()) + " ";
 	}
     query += "ELSE ranking_score END, uncertainty = CASE player_id ";
     for (const auto& [id, player] : players) {
-        query += "WHEN '" + id + "' THEN " + format("{:9f}", player.get_uncertainty()) + " ";
+        query += "WHEN '" + id + "' THEN " + format("{:.9f}", player.get_uncertainty()) + " ";
     }
-    query += "ELSE uncertainty END;";
+    query += "ELSE uncertainty END, volatility = CASE player_id ";
+    for (const auto& [id, player] : players) {
+        query += "WHEN '" + id + "' THEN " + format("{:.9f}", player.get_volatility()) + " ";
+	}
+    query += "ELSE volatility END;";
     db << query;
 }
 

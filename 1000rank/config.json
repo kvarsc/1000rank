@@ -39,16 +39,63 @@
   },
   "html_output" :
   {
+    "html_template_file_path" : "ranking_template.html",
+    "html_output_file_path" : "2023rankings.html",
+    "title" : "2023 Rankings",
+    "apply_scaling" : true,
     "scaling_factor" : 1000.0,
-	"apply_scaling" : true,
-	"html_template_file_path" : "ranking_template.html",
-	"html_output_file_path" : "2023rankings.html"
+    "volatility_bin_width" : 0.19,
+    "use_bins_for_volatility": true,
+    "volatility_bins": [
+      {
+        "max_bin_width_factor" : 0.0,
+        "bin_name" : "Zero"
+      },
+      {
+        "max_bin_width_factor" : 0.5,
+        "bin_name" : "Minimal"
+      },
+      {
+        "max_bin_width_factor" : 1.0,
+        "bin_name" : "Very Low"
+      },
+      {
+        "max_bin_width_factor" : 1.5,
+        "bin_name" : "Low"
+      },
+      {
+        "max_bin_width_factor" : 2.0,
+        "bin_name" : "Medium-Low"
+      },
+      {
+        "max_bin_width_factor" : 2.5,
+        "bin_name" : "Medium"
+      },
+      {
+        "max_bin_width_factor" : 3.0,
+        "bin_name" : "&nbsp;&nbsp;&nbsp;Medium-High"
+      },
+      {
+        "max_bin_width_factor" : 3.5,
+        "bin_name" : "High"
+      },
+      {
+        "max_bin_width_factor" : 5.0,
+        "bin_name" : "Very High"
+      },
+      {
+        "max_bin_width_factor" : 1e9,
+        "bin_name" : "Extreme"
+      }
+    ],
+    "num_players_to_write": 1000,
+    "hide_unranked_ranks" : true
   },
   "actions" :
   {
     "reextract_db" : false,
     "refilter_db" : false,
     "recompute_rankings" : false,
-	"regenerate_html" : true
+    "regenerate_html" : true
   }
 }

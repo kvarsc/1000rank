@@ -278,6 +278,80 @@ void RankingSystem::compute_uncertainties()
 	}
 }
 
+void RankingSystem::compute_volatilities()
+{
+	cout << "Computing volatilities..." << endl;
+
+	// Step 1: Store upset scores and downset scores for each player
+	unordered_map<string, unordered_map<string, double>> upset_scores;
+	unordered_map<string, unordered_map<string, double>> downset_scores;
+
+	for (const auto& match_history_entry : match_history)
+	{
+		string player_id = match_history_entry.first;
+		const Player& player = players[player_id];
+		const auto& opponents = match_history_entry.second;
+
+		for (const auto& opponent_match_record : opponents)
+		{
+			string opponent_id = opponent_match_record.first;
+			const Player& opponent = players[opponent_id];
+			const MatchRecord& match_record = opponent_match_record.second;
+
+			double win_force = match_record.get_win_force();
+			double loss_force = match_record.get_loss_force();
+
+			if (win_force > 0)
+			{
+				if (is_upset(player, opponent))
+					upset_scores[player_id][opponent_id] = win_force;
+				else
+					downset_scores[player_id][opponent_id] = win_force;
+			}
+			if (loss_force > 0)
+			{
+				if (is_upset(opponent, player))
+					upset_scores[player_id][opponent_id] = loss_force;
+				else
+					downset_scores[player_id][opponent_id] = loss_force;
+			}
+		}
+	}
+
+	// Step 2: Calculate the volatility for each player
+	for (const auto& player_entry : players)
+	{
+		string player_id = player_entry.first;
+		double player_score = player_entry.second.get_ranking_score();
+		double volatility = 0.0;
+
+		// Iterate through all opponents and calculate volatilities on the player
+		for (const auto& upset_entry : upset_scores[player_id])
+		{
+			string opponent_id = upset_entry.first;
+			double upset_score = upset_entry.second;
+			double opponent_score = players[opponent_id].get_ranking_score();
+			double score_difference = std::abs(opponent_score - player_score);
+			double sum_downset_scores = 0.0;
+
+			for (const auto& downset_entry : downset_scores[player_id])
+			{
+				string other_oppoenent_id = downset_entry.first;
+				double downset_score = downset_entry.second;
+				double other_opponent_score = players[other_oppoenent_id].get_ranking_score();
+				double other_score_difference = std::abs(opponent_score - other_opponent_score);
+
+				if (other_score_difference < 1.0)
+					sum_downset_scores += downset_score * (1.0 - other_score_difference);
+			}
+
+			volatility += score_difference * upset_score / (upset_score + sum_downset_scores);
+		}
+
+		players[player_id].set_volatility(volatility);
+	}
+}
+
 void RankingSystem::store_rankings(DatabaseManager& db_manager)
 {
 	cout << "Storing rankings..." << endl;

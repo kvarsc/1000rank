@@ -78,10 +78,29 @@ int main()
     int dtmax_freq = config["algorithm_parameters"]["dtmax_freq"];
 
     // Load html output fields
-    double scaling_factor = config["html_output"]["scaling_factor"];
-    bool apply_scaling = config["html_output"]["apply_scaling"];
     string html_template_file_path = config["html_output"]["html_template_file_path"];
     string html_output_file_path = config["html_output"]["html_output_file_path"];
+    string title = config["html_output"]["title"];
+    bool apply_scaling = config["html_output"]["apply_scaling"];
+    double scaling_factor = config["html_output"]["scaling_factor"];
+    double volatility_bin_width = config["html_output"]["volatility_bin_width"];
+    bool use_bins_for_volatility = config["html_output"]["use_bins_for_volatility"];
+
+    // Load the volatility bins
+    vector<volatility_bin> volatility_bins;
+    if (config["html_output"].contains("volatility_bins"))
+    {
+        for (const auto& bin : config["html_output"]["volatility_bins"])
+        {
+            volatility_bin next_bin;
+            next_bin.max_bin_width_factor = bin["max_bin_width_factor"];
+            next_bin.bin_name = bin["bin_name"];
+            volatility_bins.push_back(next_bin);
+        }
+    }
+
+    size_t num_players_to_write = config["html_output"]["num_players_to_write"];
+    bool hide_unranked_ranks = config["html_output"]["hide_unranked_ranks"];
 
     // Load the fields for which actions to take
     bool reextract_db = config["actions"]["reextract_db"];
@@ -146,20 +165,23 @@ int main()
     if (compute_rankings)
     {
         ranking_system.compute_uncertainties();
+        ranking_system.compute_volatilities();
         ranking_system.store_rankings(db_manager);
     }
 
     // Print the top 10 players
     ranking_system.print_top_players(10);
 
-    // Get sorted players
+    // Get players, match history, and sorted players
+    unordered_map<string, Player> players = ranking_system.get_players();
+    unordered_map<string, unordered_map<string, MatchRecord>> match_history = ranking_system.get_match_history();
     vector<reference_wrapper<Player>> sorted_players = ranking_system.get_sorted_players();
 
     // If the html needs to be generated, generate it
     if (generate_html)
     {
-        HtmlOutputGenerator html_generator(html_template_file_path, html_output_file_path);
-		html_generator.generate_html(sorted_players[0].get().get_tag());
+        HtmlOutputGenerator html_generator(html_template_file_path, html_output_file_path, title, apply_scaling, scaling_factor, sorted_players[0].get().get_ranking_score(), volatility_bin_width, volatility_bins);
+        html_generator.generate_html(players, match_history, sorted_players, num_players_to_write, use_bins_for_volatility, hide_unranked_ranks);
 	}
 
     cout << "Program complete!" << endl;

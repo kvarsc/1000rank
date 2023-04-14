@@ -50,8 +50,11 @@ public:
 	// And store ranks in player objects
 	void sort_players_by_ranking();
 
-	// Compute the uncertainties
+	// Compute the uncertainties and volatilities
 	void compute_uncertainties();
+	void compute_volatilities();
+	bool is_upset(const Player& winner, const Player& loser)
+	{ return winner.get_ranking_score() < loser.get_ranking_score(); }
 
 	// Store ranking scores in database after ranking algorithm is done
 	void store_rankings(DatabaseManager& db_manager);
