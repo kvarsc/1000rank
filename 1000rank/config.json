@@ -91,6 +91,10 @@
     "num_players_to_write": 1000,
     "hide_unranked_ranks" : true
   },
+  "delta" :
+  {
+    "previous_ranking_period_html" : "2022rankings.html"
+  },
   "actions" :
   {
     "reextract_db" : false,

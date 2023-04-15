@@ -370,3 +370,34 @@ void RankingSystem::print_top_players(int n)
 		cout << i + 1 << ". " << sorted_players[i].get().get_tag() << " (" << ranking_score << "; " << uncertainty << ")" << endl;
 	}
 }
+
+void RankingSystem::compute_ranking_deltas(string previous_ranking_period_html)
+{
+	cout << "Computing ranking deltas..." << endl;
+
+	// Parse the previous ranking period's HTML
+	RankingHtmlParser previous_ranking_results(previous_ranking_period_html);
+
+	// Get the ID to rank mapping from the previous ranking period
+	unordered_map<string, int> previous_ranking_id_to_rank = previous_ranking_results.get_id_to_rank_map();
+
+	// Iterate through all players and compute their ranking deltas
+	for (const auto& player_entry : players)
+	{
+		string player_id = player_entry.first;
+		int player_rank = player_entry.second.get_rank();
+		if (previous_ranking_id_to_rank.count(player_id))
+		{
+			int previous_rank = previous_ranking_id_to_rank[player_id];
+			int ranking_delta = previous_rank - player_rank;
+			string ranking_delta_string = to_string(ranking_delta);
+			if(ranking_delta > 0)
+				ranking_delta_string = "+" + ranking_delta_string;
+			players[player_id].set_delta(ranking_delta_string);
+		}
+		else
+		{
+			players[player_id].set_delta("NEW");
+		}
+	}
+}

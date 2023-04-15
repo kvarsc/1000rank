@@ -14,6 +14,10 @@ void HtmlOutputGenerator::generate_html(const unordered_map<string, Player>& pla
 	mstch::array players_data;
 	for (size_t i = 0; i < num_players_to_write; ++i)
 	{
+		// Get the player id and tag
+		string player_id = sorted_players[i].get().get_id();
+		string player_tag = sorted_players[i].get().get_tag();
+
 		// Compute the ranking score and uncertainty
 		double raw_ranking_score = sorted_players[i].get().get_ranking_score(); // keep this for opponent comparisons
 		double ranking_score = raw_ranking_score;
@@ -38,9 +42,8 @@ void HtmlOutputGenerator::generate_html(const unordered_map<string, Player>& pla
 			}
 		}
 
-		// Get the player id and tag
-		string player_id = sorted_players[i].get().get_id();
-		string player_tag = sorted_players[i].get().get_tag();
+		// Get the delta (change in rank from prev. season)
+		string delta = sorted_players[i].get().get_delta();
 
 		// Sort the player's opponents by ranking score
 		vector<Player> opponents;
@@ -105,6 +108,7 @@ void HtmlOutputGenerator::generate_html(const unordered_map<string, Player>& pla
 			{"ranking_score", format("{:.2f}", ranking_score)},
 			{"uncertainty", format("{:.2f}", uncertainty)},
 			{"volatility", volatility_string},
+			{"delta", delta},
 			{"collapse_id", to_string(i)},
 			{"match_history", match_history_data}
 		});

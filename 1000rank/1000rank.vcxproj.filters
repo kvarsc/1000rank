@@ -48,6 +48,9 @@
     <ClCompile Include="HtmlOutputGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RankingHtmlParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h">
@@ -105,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HtmlOutputGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RankingHtmlParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

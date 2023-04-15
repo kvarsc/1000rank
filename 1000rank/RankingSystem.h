@@ -10,6 +10,7 @@
 #include "DatabaseManager.h"
 #include "Player.h"
 #include "MatchRecord.h"
+#include "RankingHtmlParser.h"
 
 using namespace std;
 
@@ -61,6 +62,9 @@ public:
 
 	// Print the top players
 	void print_top_players(int n);
+
+	// Compute changes in rank from previous ranking period
+	void compute_ranking_deltas(string previous_ranking_period_html);
 private:
 	unordered_map<string, Player> players;
 	unordered_map<string, unordered_map<string, MatchRecord>> match_history;

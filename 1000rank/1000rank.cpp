@@ -102,6 +102,9 @@ int main()
     size_t num_players_to_write = config["html_output"]["num_players_to_write"];
     bool hide_unranked_ranks = config["html_output"]["hide_unranked_ranks"];
 
+    // Load the fields related to rank change from previous year (delta fields)
+    string previous_ranking_period_html = config["delta"]["previous_ranking_period_html"];
+
     // Load the fields for which actions to take
     bool reextract_db = config["actions"]["reextract_db"];
     bool refilter_db = config["actions"]["refilter_db"];
@@ -171,6 +174,12 @@ int main()
 
     // Print the top 10 players
     ranking_system.print_top_players(10);
+
+    // Compute the changes in ranking from last ranking period (deltas)
+    if (generate_html)
+    {
+		ranking_system.compute_ranking_deltas(previous_ranking_period_html);
+	}
 
     // Get players, match history, and sorted players
     unordered_map<string, Player> players = ranking_system.get_players();

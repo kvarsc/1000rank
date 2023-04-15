@@ -17,6 +17,7 @@ public:
 	double get_uncertainty() const { return uncertainty; }
 	double get_volatility() const { return volatility; }
 	int get_rank() const { return rank; }
+	string get_delta() const { return delta; }
 	double get_del() const { return del; }
 	double get_delold() const { return delold; }
 	double get_vel() const { return vel; }
@@ -26,6 +27,7 @@ public:
 	void set_uncertainty(double new_uncertainty) { uncertainty = new_uncertainty; }
 	void set_volatility(double new_volatility) { volatility = new_volatility; }
 	void set_rank(int new_rank) { rank = new_rank; }
+	void set_delta(string new_delta) { delta = new_delta; }
 	void set_del(double new_del) { del = new_del; }
 	void set_delold(double new_delold) { delold = new_delold; }
 	void set_vel(double new_vel) { vel = new_vel; }
@@ -52,6 +54,7 @@ private:
 	double uncertainty;
 	double volatility;
 	int rank;
+	string delta;
 
 	// Algorithm info
 	double del; // force (delta) of the current time step
