@@ -93,13 +93,16 @@
   },
   "delta" :
   {
-    "previous_ranking_period_html" : "2022rankings.html"
+    "previous_ranking_period_html" : "2022rankings.html",
+    "earlier_ranking_period_htmls" : [
+      "2019rankings.html"
+    ]
   },
   "actions" :
   {
     "reextract_db" : false,
     "refilter_db" : false,
     "recompute_rankings" : false,
-    "regenerate_html" : true
+    "regenerate_html" : false
   }
 }

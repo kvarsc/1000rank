@@ -25,9 +25,9 @@ int main()
 
     if (!config_file.is_open())
     {
-		cout << "Failed to open config.json." << endl;
-		exit(1);
-	}
+        cout << "Failed to open config.json." << endl;
+        exit(1);
+    }
 
     json config;
     try
@@ -36,9 +36,9 @@ int main()
     }
     catch (json::parse_error& e)
     {
-		cout << "Failed to parse config.json: " << e.what() << endl;
-		exit(1);
-	}
+        cout << "Failed to parse config.json: " << e.what() << endl;
+        exit(1);
+    }
 
     // Load the database fields
     string repo_owner = config["database"]["repo_owner"];
@@ -60,10 +60,10 @@ int main()
         {
             if (tournament.contains("id"))
             {
-				special_tournament_keys.push_back(tournament["id"].get<string>());
+                special_tournament_keys.push_back(tournament["id"].get<string>());
             }
-		}
-	}
+        }
+    }
 
     // Load the parameters of the FIRE algorithm
     double sig = config["algorithm_parameters"]["sig"];
@@ -104,6 +104,19 @@ int main()
 
     // Load the fields related to rank change from previous year (delta fields)
     string previous_ranking_period_html = config["delta"]["previous_ranking_period_html"];
+    // Load the earlier ranking period htmls into an array of strings
+    vector<string> earlier_ranking_period_htmls;
+    if (config["delta"].contains("earlier_ranking_period_htmls") && config["delta"]["earlier_ranking_period_htmls"].is_array())
+    {
+        for (const auto& html : config["delta"]["earlier_ranking_period_htmls"])
+        {
+            earlier_ranking_period_htmls.push_back(html);
+        }
+    }
+    else
+    {
+        cerr << "Invalid JSON format or 'earlier_ranking_period_htmls' key not found." << endl;
+    }
 
     // Load the fields for which actions to take
     bool reextract_db = config["actions"]["reextract_db"];
@@ -178,7 +191,7 @@ int main()
     // Compute the changes in ranking from last ranking period (deltas)
     if (generate_html)
     {
-		ranking_system.compute_ranking_deltas(previous_ranking_period_html);
+		ranking_system.compute_ranking_deltas(previous_ranking_period_html, earlier_ranking_period_htmls);
 	}
 
     // Get players, match history, and sorted players
