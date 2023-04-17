@@ -215,7 +215,7 @@ int main()
     {
         HtmlOutputGenerator html_generator(html_template_file_path, html_output_file_path, title, apply_scaling, scaling_factor, sorted_players[0].get().get_ranking_score(), volatility_bin_width, volatility_bins);
         html_generator.generate_html(players, match_history, sorted_players, num_players_to_write, use_bins_for_volatility, hide_unranked_ranks);
-	}
+    }
 
     cout << "Program complete!" << endl;
     return 0;
