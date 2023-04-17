@@ -22,6 +22,8 @@ public:
     void print_all_counts();
 
     void create_filtered_sets_database(const string& new_db_path, string pre_season_date, string post_season_date, int minimum_entrants, const vector<string>& special_tournament_keys);
+    void add_indices();
+    void endpoint_filtering(int regional_minimum_entrants, int major_minimum_entrants, int regional_attendance_threshold, int major_attendance_threshold, int minimum_losses, int minimum_sets, const vector<string>& special_tournament_keys);
     void add_ranking_columns();
 
     vector<tuple<string, string, double, double, double>> fetch_all_players();
@@ -32,4 +34,8 @@ public:
 private:
     sqlite::database db;
     string special_tournament_keys_string(const vector<string>& special_tournament_keys);
+    void delete_low_attendance_sets(int regional_minimum_entrants, int major_minimum_entrants, int regional_attendance_threshold, int major_attendance_threshold, const string& special_keys_string);
+    void delete_low_loss_sets(int minimum_losses);
+    void delete_low_set_sets(int minimum_sets);
+    void update_players_table();
 };

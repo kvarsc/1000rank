@@ -114,17 +114,158 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
     cout << "Done filtering database." << endl;
 }
 
+void DatabaseManager::add_indices()
+{
+    cout << "Adding indices to database..." << endl;
+
+    // Add indices to the new database
+    db << "CREATE INDEX IF NOT EXISTS player_id_index ON players(player_id);";
+    db << "CREATE INDEX IF NOT EXISTS tournament_info_key_index ON tournament_info(key);";
+    db << "CREATE INDEX IF NOT EXISTS sets_tournament_key_index ON sets(tournament_key);";
+    db << "CREATE INDEX IF NOT EXISTS p1_id_index ON sets(p1_id);";
+    db << "CREATE INDEX IF NOT EXISTS p2_id_index ON sets(p2_id);";
+    db << "CREATE INDEX IF NOT EXISTS winner_id_index ON sets(winner_id);";
+}
+
+void DatabaseManager::endpoint_filtering(int regional_minimum_entrants, int major_minimum_entrants, int regional_attendance_threshold, int major_attendance_threshold, int minimum_losses, int minimum_sets, const vector<string>& special_tournament_keys)
+{
+    cout << "Doing endpoint player filtering..." << endl;
+
+    // Create the string of special tournament keys
+    string special_keys_string = special_tournament_keys_string(special_tournament_keys);
+
+    // Set up player counts for recursive filtering
+    int prev_player_count = 0;
+    int cur_player_count = get_players_count();
+    cout << "Initial player count: " << cur_player_count << endl;
+
+    // Keep filtering until the player count stops changing
+    while (cur_player_count != prev_player_count)
+    {
+        prev_player_count = cur_player_count;
+        // Delete sets of players who haven't attended enough tourneys to qualify
+        delete_low_attendance_sets(regional_minimum_entrants, major_minimum_entrants, regional_attendance_threshold, major_attendance_threshold, special_keys_string);
+        // Delete sets of players who haven't taken enough losses
+        delete_low_loss_sets(minimum_losses);
+        // Delete sets of players who haven't played enough sets
+        delete_low_set_sets(minimum_sets);
+        // Update the player table
+        update_players_table();
+        cur_player_count = get_players_count();
+        cout << "Current player count: " << cur_player_count << endl;
+    }
+
+    cout << "Done endpoint player filtering." << endl;
+}
+
+void DatabaseManager::delete_low_attendance_sets(int regional_minimum_entrants, int major_minimum_entrants, int regional_attendance_threshold, int major_attendance_threshold, const string& special_keys_string)
+{
+    cout << "Deleting low attendance sets..." << endl;
+
+    // Delete all players' sets who fail to reach any of the attendance thresholds
+    db <<
+        "WITH filtered_players AS("
+        "SELECT p.player_id "
+        "FROM players p "
+        "WHERE "
+            "("
+                "SELECT COUNT(DISTINCT ti.key) "
+                "FROM tournament_info ti "
+                "JOIN sets s ON s.tournament_key = ti.key "
+                "WHERE (s.p1_id = p.player_id OR s.p2_id = p.player_id) AND ti.entrants >= ?"
+            ") < ? "
+            "AND "
+            "( "
+                "SELECT COUNT(DISTINCT ti.key) "
+                "FROM tournament_info ti "
+                "JOIN sets s ON s.tournament_key = ti.key "
+                "WHERE (s.p1_id = p.player_id OR s.p2_id = p.player_id) AND ti.entrants >= ?"
+            ") < ? "
+            "AND NOT EXISTS("
+                "SELECT 1 "
+                "FROM sets s "
+                "JOIN tournament_info ti ON s.tournament_key = ti.key "
+                "WHERE (s.p1_id = p.player_id OR s.p2_id = p.player_id) AND ti.key IN (" + special_keys_string + ")"
+            ")"
+        ") "
+        "DELETE FROM sets "
+        "WHERE p1_id IN (SELECT player_id FROM filtered_players) OR p2_id IN (SELECT player_id FROM filtered_players);"
+        << regional_minimum_entrants
+        << regional_attendance_threshold
+        << major_minimum_entrants
+        << major_attendance_threshold;
+}
+
+void DatabaseManager::delete_low_loss_sets(int minimum_losses)
+{
+    cout << "Deleting low loss sets..." << endl;
+
+    // Delete all players' sets who haven't taken enough losses
+    db <<
+        "WITH player_losses AS ("
+            "SELECT player_id, SUM(losses) AS total_losses "
+            "FROM ("
+                "SELECT p1_id AS player_id, COUNT(*) AS losses "
+                "FROM sets "
+                "WHERE p1_id != winner_id "
+                "GROUP BY p1_id "
+                "UNION ALL "
+                "SELECT p2_id AS player_id, COUNT(*) AS losses "
+                "FROM sets "
+                "WHERE p2_id != winner_id "
+                "GROUP BY p2_id"
+            ") "
+            "GROUP BY player_id "
+            "HAVING total_losses < ?"
+        ") "
+        "DELETE FROM sets "
+        "WHERE p1_id IN (SELECT player_id FROM player_losses) "
+        "OR p2_id IN (SELECT player_id FROM player_losses);"
+        << minimum_losses;
+}
+
+void DatabaseManager::delete_low_set_sets(int minimum_sets)
+{
+    cout << "Deleting low set sets..." << endl;
+
+    // Delete all players' sets who haven't played enough sets
+    db <<
+        "WITH player_sets AS ("
+            "SELECT player_id, SUM(num_sets) AS total_sets "
+            "FROM ("
+                "SELECT p1_id AS player_id, COUNT(*) AS num_sets "
+                "FROM sets "
+                "GROUP BY p1_id "
+                "UNION ALL "
+                "SELECT p2_id AS player_id, COUNT(*) AS num_sets "
+                "FROM sets "
+                "GROUP BY p2_id"
+            ") "
+            "GROUP BY player_id "
+            "HAVING total_sets < ?"
+        ") "
+        "DELETE FROM sets "
+        "WHERE p1_id IN (SELECT player_id FROM player_sets) "
+        "OR p2_id IN (SELECT player_id FROM player_sets);"
+        << minimum_sets;
+}
+
+void DatabaseManager::update_players_table()
+{
+    cout << "Updating players table..." << endl;
+
+    // Delete all players who are no longer in any sets
+    db << "DELETE FROM players WHERE player_id NOT IN (SELECT DISTINCT p1_id FROM sets UNION SELECT DISTINCT p2_id FROM sets);";
+}
+
 void DatabaseManager::add_ranking_columns()
 {
-    cout << "Adding ranking columns (and index) to database..." << endl;
+    cout << "Adding ranking columns to database..." << endl;
 
     // Add the ranking columns to the 'players' table
     db << "ALTER TABLE players ADD COLUMN ranking_score REAL DEFAULT 0.0;";
     db << "ALTER TABLE players ADD COLUMN uncertainty REAL DEFAULT 0.0;";
     db << "ALTER TABLE players ADD COLUMN volatility REAL DEFAULT 0.0;";
-
-    // Create an index on the 'player_id' column of the 'players' table
-    db << "CREATE INDEX player_id_index ON players (player_id);";
 }
 
 vector<tuple<string, string, double, double, double>> DatabaseManager::fetch_all_players()

@@ -65,6 +65,15 @@ int main()
         }
     }
 
+    // Load the endpoint filtering parameters
+    bool do_endpoint_filtering = config["endpoint_db_filtering"]["do_endpoint_filtering"];
+    int regional_minimum_entrants = config["endpoint_db_filtering"]["regional_minimum_entrants"];
+    int major_minimum_entrants = config["endpoint_db_filtering"]["major_minimum_entrants"];
+    int regional_attendance_threshold = config["endpoint_db_filtering"]["regional_attendance_threshold"];
+    int major_attendance_threshold = config["endpoint_db_filtering"]["major_attendance_threshold"];
+    int minimum_losses = config["endpoint_db_filtering"]["minimum_losses"];
+    int minimum_sets = config["endpoint_db_filtering"]["minimum_sets"];
+
     // Load the parameters of the FIRE algorithm
     double sig = config["algorithm_parameters"]["sig"];
     double force_threshold = config["algorithm_parameters"]["force_threshold"];
@@ -157,7 +166,9 @@ int main()
     // If the database needed to be filtered, do endpoint filtering and add the ranking columns
     if (filter_db)
     {
-        // TODO do endpoint filtering
+        db_manager.add_indices();
+        if (do_endpoint_filtering)
+            db_manager.endpoint_filtering(regional_minimum_entrants, major_minimum_entrants, regional_attendance_threshold, major_attendance_threshold, minimum_losses, minimum_sets, special_tournament_keys);
 		db_manager.add_ranking_columns();
 	}
 
