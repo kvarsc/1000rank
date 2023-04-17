@@ -203,7 +203,7 @@ int main()
     if (generate_html)
     {
 		ranking_system.compute_ranking_deltas(previous_ranking_period_html, earlier_ranking_period_htmls);
-	}
+    }
 
     // Get players, match history, and sorted players
     unordered_map<string, Player> players = ranking_system.get_players();
