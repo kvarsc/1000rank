@@ -29,4 +29,8 @@ Note that this repository was made to be compiled and run on Windows (64-bit). I
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
+This project is licensed under the MIT License. For more details, see [LICENSE.txt](LICENSE.txt).
+
+## Third-Party Libraries
+
+This project uses third-party libraries under the MIT License. For more details, see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
