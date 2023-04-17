@@ -172,7 +172,7 @@ void DatabaseManager::delete_low_attendance_sets(int regional_minimum_entrants, 
                 "SELECT COUNT(DISTINCT ti.key) "
                 "FROM tournament_info ti "
                 "JOIN sets s ON s.tournament_key = ti.key "
-                "WHERE (s.p1_id = p.player_id OR s.p2_id = p.player_id) AND ti.entrants >= ?"
+                "WHERE (s.p1_id = p.player_id OR s.p2_id = p.player_id) AND ti.entrants >= ? AND ti.entrants < ?"
             ") < ? "
             "AND "
             "( "
@@ -191,6 +191,7 @@ void DatabaseManager::delete_low_attendance_sets(int regional_minimum_entrants, 
         "DELETE FROM sets "
         "WHERE p1_id IN (SELECT player_id FROM filtered_players) OR p2_id IN (SELECT player_id FROM filtered_players);"
         << regional_minimum_entrants
+        << major_minimum_entrants
         << regional_attendance_threshold
         << major_minimum_entrants
         << major_attendance_threshold;
