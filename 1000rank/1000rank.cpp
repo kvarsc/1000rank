@@ -169,7 +169,7 @@ int main()
         db_manager.add_indices();
         if (do_endpoint_filtering)
             db_manager.endpoint_filtering(regional_minimum_entrants, major_minimum_entrants, regional_attendance_threshold, major_attendance_threshold, minimum_losses, minimum_sets, special_tournament_keys);
-		db_manager.add_ranking_columns();
+        db_manager.add_ranking_columns();
 	}
 
     // Create the ranking system
