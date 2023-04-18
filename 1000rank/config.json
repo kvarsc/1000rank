@@ -148,6 +148,7 @@
   },
   "delta" :
   {
+    "include_delta" : true,
     "previous_ranking_period_html" : "2022rankings.html",
     "earlier_ranking_period_htmls" : [
       "2019rankings.html"

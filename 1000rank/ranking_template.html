@@ -72,8 +72,8 @@ Tips: click on a numerical ranking to go to the corresponding player's smashdata
     <td><b><font size="5">Tag</font></b></td>
     <td><b><font size="5">Score</font></b></td>
     <td><b><font size="5">Uncertainty</font></b></td>
-    <td><b><font size="5">Volatility</font></b></td>
-    <td><b><font size="5">&#916;</font></b></td>
+    <td><b><font size="5">Volatility</font></b></td>{{#include_delta_header}}
+    <td><b><font size="5">&#916;</font></b></td>{{/include_delta_header}}
   </tr>
   {{#players}}
   <tr>
@@ -94,8 +94,8 @@ Tips: click on a numerical ranking to go to the corresponding player's smashdata
       </div></td>
     <td><font size="5">{{ranking_score}}</font></td>
     <td align="right"><font size="5">&pm;{{uncertainty}}</font></td>
-    <td align="right"><font size="5">{{{volatility}}}</font></td>
-    <td align="right"><font size="5">&nbsp;&nbsp;&nbsp;{{delta}}</font></td>
+    <td align="right"><font size="5">{{{volatility}}}</font></td>{{#include_delta_body}}
+    <td align="right"><font size="5">&nbsp;&nbsp;&nbsp;{{delta}}</font></td>{{/include_delta_body}}
   </tr>
   {{/players}}
 </table>

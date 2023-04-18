@@ -108,6 +108,7 @@ void HtmlOutputGenerator::generate_html(const unordered_map<string, Player>& pla
 			{"ranking_score", format("{:.2f}", ranking_score)},
 			{"uncertainty", format("{:.2f}", uncertainty)},
 			{"volatility", volatility_string},
+			{"include_delta_body", include_delta},
 			{"delta", delta},
 			{"collapse_id", to_string(i)},
 			{"match_history", match_history_data}
@@ -117,6 +118,7 @@ void HtmlOutputGenerator::generate_html(const unordered_map<string, Player>& pla
 	// Render the template
 	string rendered_html = mstch::render(template_string, mstch::map{
 		{"title", title},
+		{"include_delta_header", include_delta},
 		{"players", players_data}
 	});
 

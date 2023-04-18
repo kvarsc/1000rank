@@ -19,8 +19,8 @@ struct volatility_bin {
 class HtmlOutputGenerator
 {
 public:
-	HtmlOutputGenerator(const string& template_file_path, const string& output_file_path, const string& title, const bool& apply_scaling, const double& scaling_factor, const double& max_ranking_score, const double& volatility_bin_width, const vector<volatility_bin>& volatility_bins) :
-		template_file_path(template_file_path), output_file_path(output_file_path), title(title), apply_scaling(apply_scaling), scaling_factor(scaling_factor), max_ranking_score(max_ranking_score), volatility_bin_width(volatility_bin_width), volatility_bins(volatility_bins) {}
+	HtmlOutputGenerator(const string& template_file_path, const string& output_file_path, const string& title, const bool& apply_scaling, const double& scaling_factor, const double& max_ranking_score, const double& volatility_bin_width, const vector<volatility_bin>& volatility_bins, const bool include_delta) :
+		template_file_path(template_file_path), output_file_path(output_file_path), title(title), apply_scaling(apply_scaling), scaling_factor(scaling_factor), max_ranking_score(max_ranking_score), volatility_bin_width(volatility_bin_width), volatility_bins(volatility_bins), include_delta(include_delta) {}
 	void generate_html(const unordered_map<string, Player>& players, const unordered_map<string, unordered_map<string, MatchRecord>>& match_history, const vector<reference_wrapper<Player>>& sorted_players, size_t num_players_to_write, bool use_bins_for_volatility, bool hide_unranked_ranks);
 
 private:
@@ -34,5 +34,7 @@ private:
 
 	double volatility_bin_width;
 	vector<volatility_bin> volatility_bins;
+
+	bool include_delta;
 };
 

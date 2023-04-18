@@ -371,5 +371,9 @@ ultimate_player_database*
 *.html
 !ranking_template.html
 
+# JSON files other than main config
+*.json
+!config.json
+
 # my personal notes
 nextsteps.txt

@@ -112,20 +112,26 @@ int main()
     bool hide_unranked_ranks = config["html_output"]["hide_unranked_ranks"];
 
     // Load the fields related to rank change from previous year (delta fields)
-    string previous_ranking_period_html = config["delta"]["previous_ranking_period_html"];
-    // Load the earlier ranking period htmls into an array of strings
+    bool include_delta = config["delta"]["include_delta"];
+    string previous_ranking_period_html = "";
     vector<string> earlier_ranking_period_htmls;
-    if (config["delta"].contains("earlier_ranking_period_htmls") && config["delta"]["earlier_ranking_period_htmls"].is_array())
+    if (include_delta)
     {
-        for (const auto& html : config["delta"]["earlier_ranking_period_htmls"])
+        previous_ranking_period_html = config["delta"]["previous_ranking_period_html"];
+        // Load the earlier ranking period htmls into an array of strings
+        if (config["delta"].contains("earlier_ranking_period_htmls") && config["delta"]["earlier_ranking_period_htmls"].is_array())
         {
-            earlier_ranking_period_htmls.push_back(html);
+            for (const auto& html : config["delta"]["earlier_ranking_period_htmls"])
+            {
+                earlier_ranking_period_htmls.push_back(html);
+            }
+        }
+        else
+        {
+            cerr << "Invalid JSON format or 'earlier_ranking_period_htmls' key not found." << endl;
         }
     }
-    else
-    {
-        cerr << "Invalid JSON format or 'earlier_ranking_period_htmls' key not found." << endl;
-    }
+
 
     // Load the fields for which actions to take
     bool reextract_db = config["actions"]["reextract_db"];
@@ -200,7 +206,7 @@ int main()
     ranking_system.print_top_players(10);
 
     // Compute the changes in ranking from last ranking period (deltas)
-    if (generate_html)
+    if (generate_html && include_delta)
     {
 		ranking_system.compute_ranking_deltas(previous_ranking_period_html, earlier_ranking_period_htmls);
     }
@@ -213,7 +219,7 @@ int main()
     // If the html needs to be generated, generate it
     if (generate_html)
     {
-        HtmlOutputGenerator html_generator(html_template_file_path, html_output_file_path, title, apply_scaling, scaling_factor, sorted_players[0].get().get_ranking_score(), volatility_bin_width, volatility_bins);
+        HtmlOutputGenerator html_generator(html_template_file_path, html_output_file_path, title, apply_scaling, scaling_factor, sorted_players[0].get().get_ranking_score(), volatility_bin_width, volatility_bins, include_delta);
         html_generator.generate_html(players, match_history, sorted_players, num_players_to_write, use_bins_for_volatility, hide_unranked_ranks);
     }
 
