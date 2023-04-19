@@ -16,12 +16,12 @@ using namespace std;
 int main()
 {
     // Open and read the config file
-    if (!filesystem::exists("config.json"))
+    if (!filesystem::exists("config/config.json"))
     {
         cout << "config.json not found." << endl;
         exit(1);
     }
-    ifstream config_file("config.json");
+    ifstream config_file("config/config.json");
 
     if (!config_file.is_open())
     {
