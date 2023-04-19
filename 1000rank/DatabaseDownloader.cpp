@@ -8,8 +8,33 @@ DatabaseDownloader::~DatabaseDownloader()
 {
 }
 
-int DatabaseDownloader::check_and_download_database(const string& repo_owner, const string& repo_name, const string& asset_name, const string& local_file_path, const string& input_db_file_path, const string& output_db_file_path, const bool& reextract_db)
+int DatabaseDownloader::check_and_download_database(const string& repo_owner, const string& repo_name, const string& asset_name, const string& local_directory, const string& input_db_file_path, const string& output_db_file_path, const bool& reextract_db)
 {
+	// Step 0: Check if local_directory exists. If not, create it.
+	if (!local_directory.empty())
+	{
+		filesystem::path dir_path(local_directory);
+
+		error_code ec;
+		if (!filesystem::exists(dir_path, ec)) {
+			if (ec) {
+				cerr << "Error checking directory '" << local_directory << "' existence: " << ec.message() << '\n';
+				return 1;
+			}
+
+			if (!filesystem::create_directory(dir_path, ec)) {
+				cerr << "Error creating directory '" << local_directory << "': " << ec.message() << '\n';
+				return 1;
+			}
+			else {
+				cout << "Directory '" << local_directory << "' created successfully.\n";
+			}
+		}
+		else {
+			cout << "Directory '" << local_directory << "' already exists.\n";
+		}
+	}
+
 	// Step 1: Send an HTTP GET request to the API endpoint for the repository's releases
 	string releases_url = "https://api.github.com/repos/" + repo_owner + "/" + repo_name + "/releases";
 	auto releases_response = cpr::Get(cpr::Url{ releases_url });
@@ -41,13 +66,13 @@ int DatabaseDownloader::check_and_download_database(const string& repo_owner, co
 	local_file_name_stream << std::put_time(&release_tm, "%Y-%m-%d") << ".zip";
 	string local_file_name = local_file_name_stream.str();
 	string local_file_with_path;
-	if (local_file_path.empty())
+	if (local_directory.empty())
 	{
 		local_file_with_path = local_file_name;
 	}
 	else
 	{
-		local_file_with_path = local_file_path + "/" + local_file_name;
+		local_file_with_path = local_directory + "/" + local_file_name;
 	}
 
 	// Step 4: Compare the release dates to decide whether to download the new release or not
@@ -55,7 +80,7 @@ int DatabaseDownloader::check_and_download_database(const string& repo_owner, co
 	{
 		if (reextract_db)
 		{
-			if (extract_database(local_file_with_path, input_db_file_path, output_db_file_path))
+			if (extract_database(local_directory, local_file_with_path, input_db_file_path, output_db_file_path))
 			{
 				return 2;
 			}
@@ -92,7 +117,7 @@ int DatabaseDownloader::check_and_download_database(const string& repo_owner, co
 				if (downloadTotal > 0) {
 					double progress = static_cast<double>(downloadNow) / downloadTotal * 100;
 					cout << "\rDownloaded " << downloadNow << " / " << downloadTotal << " bytes. ("
-						<< fixed << std::setprecision(2) << progress << "%)" << flush;
+						<< fixed << setprecision(2) << progress << "%)" << flush;
 				}
 				return true;
 			}));
@@ -109,7 +134,7 @@ int DatabaseDownloader::check_and_download_database(const string& repo_owner, co
 
 	cout << endl;
 
-	if (extract_database(local_file_with_path, input_db_file_path, output_db_file_path))
+	if (extract_database(local_directory, local_file_with_path, input_db_file_path, output_db_file_path))
 	{
 		return 2;
 	}
@@ -119,8 +144,18 @@ int DatabaseDownloader::check_and_download_database(const string& repo_owner, co
 	}
 }
 
-bool DatabaseDownloader::extract_database(const string& zip_file_path, const string& input_file_path, const string& output_file_path) {
+bool DatabaseDownloader::extract_database(const string& local_directory, const string& zip_file_path, const string& input_file_path, const string& output_file_path) {
 	cout << "Extracting database..." << endl;
+
+	string output_file_with_path;
+	if (local_directory.empty())
+	{
+		output_file_with_path = output_file_path;
+	}
+	else
+	{
+		output_file_with_path = local_directory + "/" + output_file_path;
+	}
 
 	mz_zip_archive zip_archive;
 	memset(&zip_archive, 0, sizeof(zip_archive));
@@ -130,7 +165,6 @@ bool DatabaseDownloader::extract_database(const string& zip_file_path, const str
 		return false;
 	}
 
-	// Replace "subfolder/database_file_name.ext" with the correct path within the .zip file
 	int file_index = mz_zip_reader_locate_file(&zip_archive, input_file_path.c_str(), nullptr, 0);
 	if (file_index < 0) {
 		// Handle the error
@@ -156,7 +190,7 @@ bool DatabaseDownloader::extract_database(const string& zip_file_path, const str
 
 	mz_zip_reader_end(&zip_archive);
 
-	std::ofstream output_file(output_file_path, ios::binary);
+	std::ofstream output_file(output_file_with_path, ios::binary);
 	output_file.write(reinterpret_cast<const char*>(extracted_data.data()), extracted_data.size());
 	output_file.close();
 

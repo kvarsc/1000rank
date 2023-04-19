@@ -44,7 +44,7 @@ int main()
     string repo_owner = config["database"]["repo_owner"];
     string repo_name = config["database"]["repo_name"];
     string asset_name = config["database"]["asset_name"];
-    string local_file_path = config["database"]["local_file_path"];
+    string local_directory = config["database"]["local_directory"];
     string input_db_file_path = config["database"]["input_db_file_path"];
     string output_db_file_path = config["database"]["output_db_file_path"];
     string filtered_db_file_path = config["database"]["filtered_db_file_path"];
@@ -208,7 +208,7 @@ int main()
 
     // Check if the database needs to be downloaded
     int db_downloaded;
-    if (db_downloaded = db_downloader.check_and_download_database(repo_owner, repo_name, asset_name, local_file_path, input_db_file_path, output_db_file_path, reextract_db))
+    if (db_downloaded = db_downloader.check_and_download_database(repo_owner, repo_name, asset_name, local_directory, input_db_file_path, output_db_file_path, reextract_db))
     {
 		cout << "Database is downloaded/up-to-date." << endl;
 	}
@@ -221,6 +221,13 @@ int main()
     bool filter_db = (refilter_db || (db_downloaded == 2));
     bool compute_rankings = (recompute_rankings || filter_db);
     bool generate_html = (regenerate_html || compute_rankings);
+
+    // If local directory is not empty, prepend it to both db file paths
+    if (local_directory != "")
+    {
+		output_db_file_path = local_directory + "/" + output_db_file_path;
+        filtered_db_file_path = local_directory + "/" + filtered_db_file_path;
+	}
 
     // If the database needs to be filtered, create a DatabaseManager instance and filter the database
     if (filter_db)

@@ -4,7 +4,7 @@
     "repo_owner" : "smashdata",
     "repo_name" : "ThePlayerDatabase",
     "asset_name" : "ultimate_player_database.zip",
-    "local_file_path" : "",
+    "local_directory" : "db",
     "input_db_file_path" : "ultimate_player_database/ultimate_player_database.db",
     "output_db_file_path" : "ultimate_player_database.db",
     "filtered_db_file_path" : "filtered_database.db",
