@@ -65,7 +65,7 @@ public:
 	void print_top_players(int n);
 
 	// Compute changes in rank from previous ranking period
-	void compute_ranking_deltas(string previous_ranking_period_html, vector<string> earlier_ranking_period_htmls);
+	void compute_ranking_deltas(string local_directory, string previous_ranking_period_html, vector<string> earlier_ranking_period_htmls);
 private:
 	unordered_map<string, Player> players;
 	unordered_map<string, unordered_map<string, MatchRecord>> match_history;

@@ -16,7 +16,7 @@ using namespace std;
 class RankingHtmlParser
 {
 public:
-	RankingHtmlParser(const string& filename) : filename(filename), rank(1) {
+	RankingHtmlParser(const string& local_directory, const string& filename) : local_directory(local_directory), filename(filename), rank(1) {
 		parse_html_file();
 	}
 
@@ -25,15 +25,22 @@ public:
 	}
 
 private:
+	string local_directory;
 	string filename;
 	unordered_map<string, int> id_to_rank_map;
 	int rank;
 
 	void parse_html_file() {
+		// Create full file path
+		string filepath = filename;
+		if (local_directory != "") {
+			filepath = local_directory + "/" + filename;
+		}
+
 		// Read the HTML file
-		ifstream file(filename);
+		ifstream file(filepath);
 		if (!file.is_open()) {
-			cout << "Failed to open " << filename << endl;
+			cout << "Failed to open " << filepath << endl;
 			exit(1);
 		}
 		stringstream buffer;

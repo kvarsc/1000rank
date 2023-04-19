@@ -384,17 +384,17 @@ void RankingSystem::print_top_players(int n)
 	}
 }
 
-void RankingSystem::compute_ranking_deltas(string previous_ranking_period_html, vector<string> earlier_ranking_period_htmls)
+void RankingSystem::compute_ranking_deltas(string local_directory, string previous_ranking_period_html, vector<string> earlier_ranking_period_htmls)
 {
 	cout << "Computing ranking deltas..." << endl;
 
 	// Parse the previous ranking period's HTML
-	RankingHtmlParser previous_ranking_results(previous_ranking_period_html);
+	RankingHtmlParser previous_ranking_results(local_directory, previous_ranking_period_html);
 
 	// Parse the earlier ranking period HTMLs
 	vector<RankingHtmlParser> earlier_ranking_results;
 	for (const auto& earlier_ranking_period_html : earlier_ranking_period_htmls)
-		earlier_ranking_results.push_back(RankingHtmlParser(earlier_ranking_period_html));
+		earlier_ranking_results.push_back(RankingHtmlParser(local_directory, earlier_ranking_period_html));
 
 	// Get the ID to rank mapping from the previous ranking period
 	unordered_map<string, int> previous_ranking_id_to_rank = previous_ranking_results.get_id_to_rank_map();

@@ -4,8 +4,15 @@ void HtmlOutputGenerator::generate_html(const unordered_map<string, Player>& pla
 {
 	cout << "Generating HTML..." << endl;
 
+	// Create full template file path
+	string full_template_file_path = template_file_path;
+	if (local_directory != "")
+	{
+		full_template_file_path = local_directory + "/" + template_file_path;
+	}
+
 	// Load the template file
-	ifstream template_file(template_file_path);
+	ifstream template_file(full_template_file_path);
 	stringstream template_stream;
 	template_stream << template_file.rdbuf();
 	string template_string = template_stream.str();
@@ -122,8 +129,15 @@ void HtmlOutputGenerator::generate_html(const unordered_map<string, Player>& pla
 		{"players", players_data}
 	});
 
+	// Create full output file path
+	string full_output_file_path = output_file_path;
+	if (local_directory != "")
+	{
+		full_output_file_path = local_directory + "/" + output_file_path;
+	}
+
 	// Write the rendered template to the output file
-	ofstream output_file(output_file_path);
+	ofstream output_file(full_output_file_path);
 	output_file << rendered_html;
 	output_file.close();
 }

@@ -99,6 +99,7 @@
   },
   "html_output" :
   {
+    "local_directory" : "html",
     "html_template_file_path" : "ranking_template.html",
     "html_output_file_path" : "2023rankings.html",
     "title" : "2023 Rankings",

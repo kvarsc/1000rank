@@ -44,7 +44,7 @@ int main()
     string repo_owner = config["database"]["repo_owner"];
     string repo_name = config["database"]["repo_name"];
     string asset_name = config["database"]["asset_name"];
-    string local_directory = config["database"]["local_directory"];
+    string db_local_directory = config["database"]["local_directory"];
     string input_db_file_path = config["database"]["input_db_file_path"];
     string output_db_file_path = config["database"]["output_db_file_path"];
     string filtered_db_file_path = config["database"]["filtered_db_file_path"];
@@ -151,6 +151,7 @@ int main()
     double uncertainty_factor = config["uncertainty_parameters"]["uncertainty_factor"];
 
     // Load html output fields
+    string html_local_directory = config["html_output"]["local_directory"];
     string html_template_file_path = config["html_output"]["html_template_file_path"];
     string html_output_file_path = config["html_output"]["html_output_file_path"];
     string title = config["html_output"]["title"];
@@ -208,7 +209,7 @@ int main()
 
     // Check if the database needs to be downloaded
     int db_downloaded;
-    if (db_downloaded = db_downloader.check_and_download_database(repo_owner, repo_name, asset_name, local_directory, input_db_file_path, output_db_file_path, reextract_db))
+    if (db_downloaded = db_downloader.check_and_download_database(repo_owner, repo_name, asset_name, db_local_directory, input_db_file_path, output_db_file_path, reextract_db))
     {
 		cout << "Database is downloaded/up-to-date." << endl;
 	}
@@ -223,10 +224,10 @@ int main()
     bool generate_html = (regenerate_html || compute_rankings);
 
     // If local directory is not empty, prepend it to both db file paths
-    if (local_directory != "")
+    if (db_local_directory != "")
     {
-		output_db_file_path = local_directory + "/" + output_db_file_path;
-        filtered_db_file_path = local_directory + "/" + filtered_db_file_path;
+		output_db_file_path = db_local_directory + "/" + output_db_file_path;
+        filtered_db_file_path = db_local_directory + "/" + filtered_db_file_path;
 	}
 
     // If the database needs to be filtered, create a DatabaseManager instance and filter the database
@@ -288,7 +289,7 @@ int main()
     // Compute the changes in ranking from last ranking period (deltas)
     if (generate_html && include_delta)
     {
-		ranking_system.compute_ranking_deltas(previous_ranking_period_html, earlier_ranking_period_htmls);
+		ranking_system.compute_ranking_deltas(html_local_directory, previous_ranking_period_html, earlier_ranking_period_htmls);
     }
 
     // Get players, match history, and sorted players
@@ -299,7 +300,7 @@ int main()
     // If the html needs to be generated, generate it
     if (generate_html)
     {
-        HtmlOutputGenerator html_generator(html_template_file_path, html_output_file_path, title, apply_scaling, scaling_factor, sorted_players[0].get().get_ranking_score(), volatility_bin_width, volatility_bins, include_delta);
+        HtmlOutputGenerator html_generator(html_local_directory, html_template_file_path, html_output_file_path, title, apply_scaling, scaling_factor, sorted_players[0].get().get_ranking_score(), volatility_bin_width, volatility_bins, include_delta);
         html_generator.generate_html(players, match_history, sorted_players, num_players_to_write, use_bins_for_volatility, hide_unranked_ranks);
     }
 
