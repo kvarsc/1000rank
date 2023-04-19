@@ -22,6 +22,7 @@ public:
     void print_all_counts();
 
     void create_filtered_sets_database(const string& new_db_path, string pre_season_date, string post_season_date, int minimum_entrants, const vector<string>& special_tournament_keys, const vector<string>& excluded_tournament_keys);
+    void fuse_player_clones(const unordered_map<string, string>& player_clones);
     void add_indices();
     void endpoint_filtering(int regional_minimum_entrants, int major_minimum_entrants, int regional_attendance_threshold, int major_attendance_threshold, int minimum_losses, int minimum_sets, const vector<string>& special_tournament_keys);
     void add_ranking_columns();

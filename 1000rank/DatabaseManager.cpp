@@ -117,6 +117,37 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
     cout << "Done filtering database." << endl;
 }
 
+void DatabaseManager::fuse_player_clones(const unordered_map<string, string>& player_clones)
+{
+    cout << "Fusing player clones..." << endl;
+
+    // Fusion query
+    string fuse_query = "UPDATE sets SET p1_id = CASE p1_id ";
+    for (const auto& [id, clone] : player_clones) {
+		fuse_query += "WHEN " + clone + " THEN " + id + " ";
+	}
+    fuse_query += "ELSE p1_id END, p2_id = CASE p2_id ";
+    for (const auto& [id, clone] : player_clones) {
+        fuse_query += "WHEN " + clone + " THEN " + id + " ";
+    }
+    fuse_query += "ELSE p2_id END, winner_id = CASE winner_id ";
+    for (const auto& [id, clone] : player_clones) {
+		fuse_query += "WHEN " + clone + " THEN " + id + " ";
+	}
+    fuse_query += "ELSE winner_id END;";
+	db << fuse_query;
+
+    // Delete the clones
+	string delete_query = "DELETE FROM players WHERE player_id IN (";
+    for (const auto& [id, clone] : player_clones) {
+		delete_query += clone + ", ";
+	}
+	delete_query.pop_back();
+	delete_query.pop_back();
+	delete_query += ");";
+	db << delete_query;
+}
+
 void DatabaseManager::add_indices()
 {
     cout << "Adding indices to database..." << endl;

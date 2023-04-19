@@ -78,6 +78,19 @@ int main()
 		}
 	}
 
+    // Load player clones
+    unordered_map<string, string> player_clones;
+    if (config.contains("player_clones"))
+    {
+        for (const auto& player : config["player_clones"])
+        {
+            if (player.contains("id") && player.contains("clone"))
+            {
+                player_clones[player["id"].get<string>()] = player["clone"].get<string>();
+            }
+        }
+    }
+
     // Load the endpoint filtering parameters
     bool do_endpoint_filtering = config["endpoint_db_filtering"]["do_endpoint_filtering"];
     int regional_minimum_entrants = config["endpoint_db_filtering"]["regional_minimum_entrants"];
@@ -182,10 +195,12 @@ int main()
     DatabaseManager db_manager(filtered_db_file_path);
     db_manager.print_all_counts();
 
-    // If the database needed to be filtered, do endpoint filtering and add the ranking columns
+    // If the database needed to be filtered, fuse player clones, do endpoint filtering and add the ranking columns
     if (filter_db)
     {
         db_manager.add_indices();
+        if (player_clones.size() > 0)
+            db_manager.fuse_player_clones(player_clones);
         if (do_endpoint_filtering)
             db_manager.endpoint_filtering(regional_minimum_entrants, major_minimum_entrants, regional_attendance_threshold, major_attendance_threshold, minimum_losses, minimum_sets, special_tournament_keys);
         db_manager.add_ranking_columns();
