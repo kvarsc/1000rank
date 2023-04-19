@@ -278,6 +278,19 @@ void RankingSystem::compute_uncertainties()
 	}
 }
 
+void RankingSystem::subtract_uncertainties(double uncertainty_factor)
+{
+	cout << "Subtracting uncertainties..." << endl;
+
+	// Subtract the uncertainty from each player's ranking score
+	for (auto& player : players)
+	{
+		double ranking_score = player.second.get_ranking_score();
+		double uncertainty = player.second.get_uncertainty();
+		player.second.set_ranking_score(ranking_score - uncertainty_factor / uncertainty);
+	}
+}
+
 void RankingSystem::compute_volatilities()
 {
 	cout << "Computing volatilities..." << endl;

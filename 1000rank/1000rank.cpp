@@ -146,6 +146,10 @@ int main()
     double dtmax_inc = config["algorithm_parameters"]["dtmax_inc"];
     int dtmax_freq = config["algorithm_parameters"]["dtmax_freq"];
 
+    // Load the uncertainty parameters
+    bool subtract_uncertainties = config["uncertainty_parameters"]["subtract_uncertainties"];
+    double uncertainty_factor = config["uncertainty_parameters"]["uncertainty_factor"];
+
     // Load html output fields
     string html_template_file_path = config["html_output"]["html_template_file_path"];
     string html_output_file_path = config["html_output"]["html_output_file_path"];
@@ -260,6 +264,13 @@ int main()
     if (compute_rankings)
     {
         ranking_system.compute_uncertainties();
+        // If config is set to subtract uncertainty, do so
+        if (subtract_uncertainties)
+        {
+            ranking_system.subtract_uncertainties(uncertainty_factor);
+            // Sort players by ranking again
+            ranking_system.sort_players_by_ranking();
+        }
         ranking_system.compute_volatilities();
         ranking_system.store_rankings(db_manager);
     }

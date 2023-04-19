@@ -92,6 +92,11 @@
     "dtmax_inc" : 1.1,
     "dtmax_freq" : 100
   },
+  "uncertainty_parameters" :
+  {
+    "subtract_uncertainties" : false,
+    "uncertainty_factor" : 1.0
+  },
   "html_output" :
   {
     "html_template_file_path" : "ranking_template.html",

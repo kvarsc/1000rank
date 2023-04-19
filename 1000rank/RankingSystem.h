@@ -53,6 +53,7 @@ public:
 
 	// Compute the uncertainties and volatilities
 	void compute_uncertainties();
+	void subtract_uncertainties(double uncertainty_factor);
 	void compute_volatilities();
 	bool is_upset(const Player& winner, const Player& loser)
 	{ return winner.get_ranking_score() < loser.get_ranking_score(); }
