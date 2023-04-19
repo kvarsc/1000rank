@@ -33,7 +33,7 @@ void DatabaseManager::print_all_counts() {
 	cout << "Tournaments: " << get_tournaments_count() << endl;
 }
 
-void DatabaseManager::create_filtered_sets_database(const string& new_db_path, string pre_season_date, string post_season_date, int minimum_entrants, const vector<string>& special_tournament_keys, const vector<string>& excluded_tournament_keys) {
+void DatabaseManager::create_filtered_sets_database(const string& new_db_path, string pre_season_date, string post_season_date, int minimum_entrants, const vector<string>& special_tournament_keys, const vector<string>& excluded_tournament_keys, const vector<tourney_set>& excluded_sets, const vector<tourney_round>& excluded_rounds) {
     // Announce the start of filtering and print this database's counts
     cout << "Filtering database..." << endl;
     print_all_counts();
@@ -48,6 +48,8 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
     // Create the strings of special and excluded tournament keys
     string special_keys_string = special_tournament_keys_string(special_tournament_keys);
     string excluded_keys_string = special_tournament_keys_string(excluded_tournament_keys);
+    string excluded_sets_string = excluded_tournament_sets_string(excluded_sets);
+    string excluded_rounds_string = excluded_tournament_rounds_string(excluded_rounds);
 
     // Create a new database and attach it
     sqlite::database new_db(new_db_path);
@@ -73,6 +75,8 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
         "AND NOT (sets.tournament_key LIKE '%sp__1on1' AND sets.location_names LIKE '%\"Round %') " // removes best-of-1 sets from JP tourneys
         "AND (tournament_info.entrants >= ? OR tournament_info.key IN (" + special_keys_string + ")) " // invitationals
         "AND NOT (tournament_info.key IN (" + excluded_keys_string + ")) " // removes excluded tourneys
+        + excluded_sets_string // removes excluded sets
+        + excluded_rounds_string + // removes excluded rounds
         "AND NOT (sets.p1_score = -1 OR sets.p2_score = -1) " // removes DQs
         "AND NOT (tournament_info.online = 1);" // we want offline only!!!
         << pre_season_unix_time
@@ -105,6 +109,8 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
         "AND NOT (sets.tournament_key LIKE '%sp__1on1' AND sets.location_names LIKE '%\"Round %') " // removes best-of-1 sets from JP tourneys
         "AND (tournament_info.entrants >= ? OR tournament_info.key IN (" + special_keys_string + ")) " // invitationals
         "AND NOT (tournament_info.key IN (" + excluded_keys_string + ")) " // removes excluded tourneys
+        + excluded_sets_string // removes excluded sets
+        + excluded_rounds_string + // removes excluded rounds
         "AND NOT (sets.p1_score = -1 OR sets.p2_score = -1) " // removes DQs
         "AND NOT (tournament_info.online = 1);" // we want offline only!!!
         << pre_season_unix_time
@@ -352,4 +358,20 @@ string DatabaseManager::special_tournament_keys_string(const vector<string>& spe
         result.pop_back();  // Remove the trailing comma
     }
     return result;
+}
+
+string DatabaseManager::excluded_tournament_sets_string(const vector<tourney_set>& excluded_sets) {
+    string result = "";
+    for (const auto& set : excluded_sets) {
+		result += "AND NOT (p1_id = '" + set.p1_id + "' AND p2_id = '" + set.p2_id + "' AND tournament_key = '" + set.tournament_key + " AND location_names LIKE '%" + set.round_name + "%') ";
+	}
+	return result;
+}
+
+string DatabaseManager::excluded_tournament_rounds_string(const vector<tourney_round>& excluded_rounds) {
+    string result = "";
+    for (const auto& round : excluded_rounds) {
+		result += "AND NOT (tournament_key = '" + round.tournament_key + "' AND location_names LIKE '%" + round.round_name + "%') ";
+	}
+	return result;
 }

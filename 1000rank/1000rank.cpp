@@ -78,6 +78,40 @@ int main()
 		}
 	}
 
+    // Load the excluded sets
+    vector<tourney_set> excluded_sets;
+    if (config.contains("excluded_sets"))
+    {
+        for (const auto& set : config["excluded_sets"])
+        {
+            if (set.contains("p1_id") && set.contains("p2_id") && set.contains("tournament_key") && set.contains("round_name"))
+            {
+				tourney_set next_set;
+				next_set.p1_id = set["p1_id"].get<string>();
+				next_set.p2_id = set["p2_id"].get<string>();
+				next_set.tournament_key = set["tournament_key"].get<string>();
+				next_set.round_name = set["round_name"].get<string>();
+				excluded_sets.push_back(next_set);
+			}
+		}
+	}
+
+    // Load the excluded rounds
+    vector<tourney_round> excluded_rounds;
+    if (config.contains("excluded_rounds"))
+    {
+        for (const auto& round : config["excluded_rounds"])
+        {
+            if (round.contains("tournament_key") && round.contains("round_name"))
+            {
+				tourney_round next_round;
+				next_round.tournament_key = round["tournament_key"].get<string>();
+				next_round.round_name = round["round_name"].get<string>();
+				excluded_rounds.push_back(next_round);
+			}
+		}
+	}
+
     // Load player clones
     unordered_map<string, string> player_clones;
     if (config.contains("player_clones"))
@@ -188,7 +222,7 @@ int main()
     if (filter_db)
     {
         DatabaseManager db_manager(output_db_file_path);
-        db_manager.create_filtered_sets_database(filtered_db_file_path, pre_season_date, post_season_date, minimum_entrants, special_tournament_keys, excluded_tournament_keys);
+        db_manager.create_filtered_sets_database(filtered_db_file_path, pre_season_date, post_season_date, minimum_entrants, special_tournament_keys, excluded_tournament_keys, excluded_sets, excluded_rounds);
     }
 
     // Create a db_manager for the filtered database and print all counts
