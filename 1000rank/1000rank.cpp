@@ -65,6 +65,19 @@ int main()
         }
     }
 
+    // Load the excluded tournaments
+    vector<string> excluded_tournament_keys;
+    if (config.contains("excluded_tournaments"))
+    {
+        for (const auto& tournament : config["excluded_tournaments"])
+        {
+            if (tournament.contains("id"))
+            {
+				excluded_tournament_keys.push_back(tournament["id"].get<string>());
+			}
+		}
+	}
+
     // Load the endpoint filtering parameters
     bool do_endpoint_filtering = config["endpoint_db_filtering"]["do_endpoint_filtering"];
     int regional_minimum_entrants = config["endpoint_db_filtering"]["regional_minimum_entrants"];
@@ -162,7 +175,7 @@ int main()
     if (filter_db)
     {
         DatabaseManager db_manager(output_db_file_path);
-        db_manager.create_filtered_sets_database(filtered_db_file_path, pre_season_date, post_season_date, minimum_entrants, special_tournament_keys);
+        db_manager.create_filtered_sets_database(filtered_db_file_path, pre_season_date, post_season_date, minimum_entrants, special_tournament_keys, excluded_tournament_keys);
     }
 
     // Create a db_manager for the filtered database and print all counts

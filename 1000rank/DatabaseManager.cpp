@@ -33,7 +33,7 @@ void DatabaseManager::print_all_counts() {
 	cout << "Tournaments: " << get_tournaments_count() << endl;
 }
 
-void DatabaseManager::create_filtered_sets_database(const string& new_db_path, string pre_season_date, string post_season_date, int minimum_entrants, const vector<string>& special_tournament_keys) {
+void DatabaseManager::create_filtered_sets_database(const string& new_db_path, string pre_season_date, string post_season_date, int minimum_entrants, const vector<string>& special_tournament_keys, const vector<string>& excluded_tournament_keys) {
     // Announce the start of filtering and print this database's counts
     cout << "Filtering database..." << endl;
     print_all_counts();
@@ -45,8 +45,9 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
     int pre_season_unix_time = date_string_to_unix_time(pre_season_date);
     int post_season_unix_time = date_string_to_unix_time(post_season_date);
 
-    // Create the string of special tournament keys
+    // Create the strings of special and excluded tournament keys
     string special_keys_string = special_tournament_keys_string(special_tournament_keys);
+    string excluded_keys_string = special_tournament_keys_string(excluded_tournament_keys);
 
     // Create a new database and attach it
     sqlite::database new_db(new_db_path);
@@ -71,6 +72,7 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
         "AND tournament_info.end < ? "
         "AND NOT (sets.tournament_key LIKE '%sp__1on1' AND sets.location_names LIKE '%\"Round %') " // removes best-of-1 sets from JP tourneys
         "AND (tournament_info.entrants >= ? OR tournament_info.key IN (" + special_keys_string + ")) " // invitationals
+        "AND NOT (tournament_info.key IN (" + excluded_keys_string + ")) " // removes excluded tourneys
         "AND NOT (sets.p1_score = -1 OR sets.p2_score = -1) " // removes DQs
         "AND NOT (tournament_info.online = 1);" // we want offline only!!!
         << pre_season_unix_time
@@ -102,6 +104,7 @@ void DatabaseManager::create_filtered_sets_database(const string& new_db_path, s
         "AND tournament_info.end < ? "
         "AND NOT (sets.tournament_key LIKE '%sp__1on1' AND sets.location_names LIKE '%\"Round %') " // removes best-of-1 sets from JP tourneys
         "AND (tournament_info.entrants >= ? OR tournament_info.key IN (" + special_keys_string + ")) " // invitationals
+        "AND NOT (tournament_info.key IN (" + excluded_keys_string + ")) " // removes excluded tourneys
         "AND NOT (sets.p1_score = -1 OR sets.p2_score = -1) " // removes DQs
         "AND NOT (tournament_info.online = 1);" // we want offline only!!!
         << pre_season_unix_time
