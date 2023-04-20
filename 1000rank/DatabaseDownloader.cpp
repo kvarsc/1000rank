@@ -8,7 +8,7 @@ DatabaseDownloader::~DatabaseDownloader()
 {
 }
 
-int DatabaseDownloader::check_and_download_database(const string& repo_owner, const string& repo_name, const string& asset_name, const string& local_directory, const string& input_db_file_path, const string& output_db_file_path, const bool& reextract_db)
+int DatabaseDownloader::check_and_download_database(const string& repo_owner, const string& repo_name, const string& asset_name, const string& local_directory, const string& zip_prefix, const string& input_db_file_path, const string& output_db_file_path, const bool& reextract_db)
 {
 	// Step 0: Check if local_directory exists. If not, create it.
 	if (!local_directory.empty())
@@ -64,7 +64,7 @@ int DatabaseDownloader::check_and_download_database(const string& repo_owner, co
 	// Generate the local file name based on the release date
 	std::ostringstream local_file_name_stream;
 	local_file_name_stream << std::put_time(&release_tm, "%Y-%m-%d") << ".zip";
-	string local_file_name = local_file_name_stream.str();
+	string local_file_name = zip_prefix + local_file_name_stream.str();
 	string local_file_with_path;
 	if (local_directory.empty())
 	{

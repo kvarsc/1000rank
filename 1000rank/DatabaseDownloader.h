@@ -15,7 +15,7 @@ class DatabaseDownloader
 		DatabaseDownloader();
 		~DatabaseDownloader();
 
-		int check_and_download_database(const string& repo_owner, const string& repo_name, const string& asset_name, const string& local_directory, const string& input_db_file_path, const string& output_db_file_path, const bool& reextract_db);
+		int check_and_download_database(const string& repo_owner, const string& repo_name, const string& asset_name, const string& local_directory, const string& zip_prefix, const string& input_db_file_path, const string& output_db_file_path, const bool& reextract_db);
 		bool extract_database(const string& local_directory, const string& zip_file_path, const string& input_file_path, const string& output_file_path);
 };
 

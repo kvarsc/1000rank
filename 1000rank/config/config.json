@@ -5,9 +5,10 @@
     "repo_name" : "ThePlayerDatabase",
     "asset_name" : "ultimate_player_database.zip",
     "local_directory" : "db",
+	"zip_prefix" : "ultimate_",
     "input_db_file_path" : "ultimate_player_database/ultimate_player_database.db",
     "output_db_file_path" : "ultimate_player_database.db",
-    "filtered_db_file_path" : "filtered_database.db",
+    "filtered_db_file_path" : "ultimate_filtered_database.db",
     "pre_season_date" : "2022-12-07",
     "post_season_date" : "2023-12-07",
     "minimum_entrants" : 51

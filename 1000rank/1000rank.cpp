@@ -69,6 +69,7 @@ int main()
     string repo_name = config["database"]["repo_name"];
     string asset_name = config["database"]["asset_name"];
     string db_local_directory = config["database"]["local_directory"];
+    string zip_prefix = config["database"]["zip_prefix"];
     string input_db_file_path = config["database"]["input_db_file_path"];
     string output_db_file_path = config["database"]["output_db_file_path"];
     string filtered_db_file_path = config["database"]["filtered_db_file_path"];
@@ -233,7 +234,7 @@ int main()
 
     // Check if the database needs to be downloaded
     int db_downloaded;
-    if (db_downloaded = db_downloader.check_and_download_database(repo_owner, repo_name, asset_name, db_local_directory, input_db_file_path, output_db_file_path, reextract_db))
+    if (db_downloaded = db_downloader.check_and_download_database(repo_owner, repo_name, asset_name, db_local_directory, zip_prefix, input_db_file_path, output_db_file_path, reextract_db))
     {
 		cout << "Database is downloaded/up-to-date." << endl;
 	}
