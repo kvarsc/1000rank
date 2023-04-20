@@ -373,6 +373,7 @@ ultimate_player_database*
 
 # JSON files other than main config
 *.json
+!meta-config.json
 !config.json
 
 # my personal notes

@@ -15,20 +15,44 @@ using namespace std;
 
 int main()
 {
-    // Open and read the config file
-    if (!filesystem::exists("config/config.json"))
+    // Open and read the meta-config file
+    if (!filesystem::exists("config/meta-config.json"))
     {
-        cout << "config.json not found." << endl;
+		cout << "meta-config.json not found." << endl;
+		exit(1);
+	}
+    ifstream meta_config_file("config/meta-config.json");
+    if (!meta_config_file.is_open())
+    {
+		cout << "Failed to open meta-config.json." << endl;
+		exit(1);
+	}
+    json meta_config;
+    try
+    {
+		meta_config_file >> meta_config;
+	}
+    catch (json::parse_error& e)
+    {
+		cout << "Failed to parse meta-config.json: " << e.what() << endl;
+		exit(1);
+	}
+
+    string config_file_name = meta_config["config_file"];
+    config_file_name = "config/" + config_file_name;
+
+    // Open and read the config file
+    if (!filesystem::exists(config_file_name))
+    {
+        cout << "Config file " << config_file_name << " not found." << endl;
         exit(1);
     }
-    ifstream config_file("config/config.json");
-
+    ifstream config_file(config_file_name);
     if (!config_file.is_open())
     {
-        cout << "Failed to open config.json." << endl;
+        cout << "Failed to open config file " << config_file_name << "." << endl;
         exit(1);
     }
-
     json config;
     try
     {
@@ -36,7 +60,7 @@ int main()
     }
     catch (json::parse_error& e)
     {
-        cout << "Failed to parse config.json: " << e.what() << endl;
+        cout << "Failed to parse config file " << config_file_name << ": " << e.what() << endl;
         exit(1);
     }
 
