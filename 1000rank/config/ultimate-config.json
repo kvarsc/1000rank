@@ -40,6 +40,11 @@
       "end": 1675526400
     },
     {
+      "id": "ki-blast-finale-pt-2__ki-blast-phases",
+      "name": "Ki Blast Finale - pt. 2",
+      "end": 1676174400
+    },
+    {
       "id": "texas-reverie-2023__ultimate-singles",
       "name": "Texas Reverie 2023 Ultimate Singles",
       "end": 1679284800
@@ -68,6 +73,51 @@
       "id": "skl-gaming-ganga-presenta-arrebato__arrebato-invitacional",
       "name": "SKL Gaming Ganga presenta: ARREBATO Arrebato Popular 1v1",
       "end": 1681704000
+    },
+    {
+      "id": "tokyo-smash-boot-camp__ssbu-1vs1",
+      "name": "TOKYO SMASH BOOT CAMP",
+      "end": 1683111600
+    },
+    {
+      "id": "hit-champion-series-5-maesumahit-champion-series-5__singles-tournament",
+      "name": "MaesumaHITChampion Series#5",
+      "end": 1683975600
+    },
+    {
+      "id": "26-rising-s-show-stopper-presented-by-block-house__ultimate-invitational-singles",
+      "name": "26 Rising's Show Stopper presented by Block House Ultimate Invitational (Singles)",
+      "end": 1684036740
+    },
+    {
+      "id": "midwest-ultimate-invitational__ultimate-singles",
+      "name": "Midwest Ultimate Invitational",
+      "end": 1687122000
+    },
+    {
+      "id": "gamescom-2023-invitational__ultimate-singles",
+      "name": "gamescom 2023 Invitational",
+      "end": 1693022460
+    },
+    {
+      "id": "cascadia-clash-2023__cascadia-clash-singles",
+      "name": "Cascadia Clash 2023",
+      "end": 1693803300
+    },
+    {
+      "id": "into-the-empire-1__smash-ultimate-singles",
+      "name": "Into the Empire #1 Smash Ultimate Singles",
+      "end": 1695002400
+    },
+    {
+      "id": "lit-vitational__phases-final-bracket",
+      "name": "Litvitational",
+      "end": 1695441540
+    },
+    {
+      "id": "maingame-fest-mini-invitacional__ultimate-singles",
+      "name": "Maingame Fest Mini: Invitacional",
+      "end": 1696482000
     }
   ],
   "endpoint_db_filtering" :
@@ -95,15 +145,15 @@
   },
   "uncertainty_parameters" :
   {
-    "subtract_uncertainties" : false,
+    "subtract_uncertainties" : true,
     "uncertainty_factor" : 1.0
   },
   "html_output" :
   {
     "local_directory" : "html",
-    "html_template_file_path" : "ranking_template.html",
-    "html_output_file_path" : "2023rankings.html",
-    "title" : "2023 Rankings",
+    "html_template_file_path" : "ultimate_ranking_template.html",
+    "html_output_file_path" : "2023rankings_ultimate.html",
+    "title" : "2023 Ultimate Rankings",
     "apply_scaling" : true,
     "scaling_factor" : 1000.0,
     "volatility_bin_width" : 0.19,

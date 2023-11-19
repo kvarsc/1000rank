@@ -1,0 +1,101 @@
+<!doctype HTML>
+
+<head>
+<meta charset="utf-8"/>
+</head>
+
+<body bgcolor="BBBBBB">
+
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+
+tr:nth-child(even) {background-color: #AAAAAA;}
+
+.wrap-collapsible {
+  margin-bottom: 1.2rem 0;
+}
+
+input[type='checkbox'] {
+  display: none;
+}
+
+.lbl-toggle {
+  display: inline-block;
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 0.1rem;
+  color: #0000FF;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: all 0.25s ease-out;
+}
+
+.lbl-toggle:hover {
+  color: #0000FF;
+}
+
+.toggle:checked + .lbl-toggle::before {
+  transform: rotate(90deg) translateX(-3px);
+}
+
+.collapsible-content {
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height .25s ease-in-out;
+}
+
+.toggle:checked + .lbl-toggle + .collapsible-content {
+  max-height: 3000px;
+}
+
+.toggle:checked + .lbl-toggle {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.collapsible-content .content-inner {
+  display: inline-block;
+  border-bottom: 1px solid rgba(250, 224, 66, .45);
+  padding: .0rem .5rem;
+</style>
+
+<font size="6">{{title}}</font>
+<br><br>
+Tips: click on a numerical ranking to go to the corresponding player's smashdata.gg page. Click on their tag to view their relevant set history.
+<br><br>To find a player by tag, use Ctrl+F (Command+F on Mac), and put 2 spaces after the end of the tag in your search.
+<br><br>Please put significantly less trust into rankings which have a high uncertainty (&gt;20) than those with moderate uncertainty (10-20), and less trust into those than rankings with a low uncertainty (&lt;10).<br><br>
+<table>
+  <tr>
+    <td><b><font size="5">Ranking</font></b></td>
+    <td><b><font size="5">Tag</font></b></td>
+    <td><b><font size="5">Score</font></b></td>
+    <td><b><font size="5">Uncertainty</font></b></td>
+    <td><b><font size="5">Volatility</font></b></td>{{#include_delta_header}}
+    <td><b><font size="5">&#916;</font></b></td>{{/include_delta_header}}
+  </tr>
+  {{#players}}
+  <tr>
+    <td><font size="5"><a href="https://smashdata.gg/smash/melee/player/{{tag}}?id={{id}}" style="color:#0000FF;">{{rank}}</a>&nbsp;&nbsp;</font></td>
+    <td>
+      <div class="wrap-collapsible">
+        <input id="{{collapse_id}}" class="toggle" type="checkbox">
+        <label for="{{collapse_id}}" class="lbl-toggle"><font size="5"><u>{{tag}}</u>&nbsp;&nbsp;</font></label><!-- {{id}} -->
+        <div class="collapsible-content">
+          <div class="content-inner">
+            <p>
+			  {{#match_history}}
+              {{#add_break}}<br>{{/add_break}}{{wins}}-{{losses}} {{opponent}} ({{opp_rank}})
+			  {{/match_history}}
+            </p>
+          </div>
+        </div>
+      </div></td>
+    <td><font size="5">{{ranking_score}}</font></td>
+    <td align="right"><font size="5">&pm;{{uncertainty}}</font></td>
+    <td align="right"><font size="5">{{{volatility}}}</font></td>{{#include_delta_body}}
+    <td align="right"><font size="5">&nbsp;&nbsp;&nbsp;{{delta}}</font></td>{{/include_delta_body}}
+  </tr>
+  {{/players}}
+</table>

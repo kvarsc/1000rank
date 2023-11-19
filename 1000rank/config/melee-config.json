@@ -1,0 +1,139 @@
+{
+  "database" :
+  {
+    "repo_owner" : "smashdata",
+    "repo_name" : "ThePlayerDatabase",
+    "asset_name" : "melee_player_database.zip",
+    "local_directory" : "db",
+	"zip_prefix" : "melee_",
+    "input_db_file_path" : "melee_player_database/melee_player_database.db",
+    "output_db_file_path" : "melee_player_database.db",
+    "filtered_db_file_path" : "melee_filtered_database.db",
+    "pre_season_date" : "2021-12-07",
+    "post_season_date" : "2023-12-07",
+    "minimum_entrants" : 16
+  },
+  "special_tournaments": [
+  ],
+  "excluded_tournaments": [
+    {
+      "id": "double-down-2022__poke-ball-tournament-ssbm",
+      "name": "Double Down 2022 Poke Ball Tournament (SSBM)",
+      "end": 1657501140
+    }
+  ],
+  "excluded_rounds": [
+    {
+      "tournament_key": "ludwig-smash-invitational__melee-singles-lcq",
+	  "round_name": "Winners Semi-Final"
+    }
+  ],
+  "player_clones": [
+    {
+      "id": "1004",
+	  "clone": "2214938"
+	},
+    {
+      "id": "30287",
+	  "clone": "3019702"
+	}
+  ],
+  "endpoint_db_filtering" :
+  {
+    "do_endpoint_filtering": true,
+    "regional_minimum_entrants": 200,
+    "major_minimum_entrants": 400,
+    "regional_attendance_threshold": 2,
+    "major_attendance_threshold": 1,
+    "minimum_losses": 2,
+    "minimum_sets": 1
+  },
+  "algorithm_parameters" :
+  {
+    "sig" : 0.0001,
+    "force_threshold" : 1e-10,
+    "nmin" : 5,
+    "finc" : 1.1,
+    "fdec": 0.5,
+    "astart" : 0.1,
+    "fa" : 0.99,
+    "dtmax" : 0.005,
+    "dtmax_inc" : 1.1,
+    "dtmax_freq" : 100
+  },
+  "uncertainty_parameters" :
+  {
+    "subtract_uncertainties" : false,
+    "uncertainty_factor" : 1.0
+  },
+  "html_output" :
+  {
+    "local_directory" : "html",
+    "html_template_file_path" : "melee_ranking_template.html",
+    "html_output_file_path" : "2023rankings_melee.html",
+    "title" : "2023 Melee Rankings",
+    "apply_scaling" : true,
+    "scaling_factor" : 1000.0,
+    "volatility_bin_width" : 0.19,
+    "use_bins_for_volatility": true,
+    "volatility_bins": [
+      {
+        "max_bin_width_factor" : 0.0,
+        "bin_name" : "Zero"
+      },
+      {
+        "max_bin_width_factor" : 0.5,
+        "bin_name" : "Minimal"
+      },
+      {
+        "max_bin_width_factor" : 1.0,
+        "bin_name" : "Very Low"
+      },
+      {
+        "max_bin_width_factor" : 1.5,
+        "bin_name" : "Low"
+      },
+      {
+        "max_bin_width_factor" : 2.0,
+        "bin_name" : "Medium-Low"
+      },
+      {
+        "max_bin_width_factor" : 2.5,
+        "bin_name" : "Medium"
+      },
+      {
+        "max_bin_width_factor" : 3.0,
+        "bin_name" : "&nbsp;&nbsp;&nbsp;Medium-High"
+      },
+      {
+        "max_bin_width_factor" : 3.5,
+        "bin_name" : "High"
+      },
+      {
+        "max_bin_width_factor" : 5.0,
+        "bin_name" : "Very High"
+      },
+      {
+        "max_bin_width_factor" : 1e9,
+        "bin_name" : "Extreme"
+      }
+    ],
+    "num_players_to_write": 1000,
+    "hide_unranked_ranks" : true
+  },
+  "delta" :
+  {
+    "include_delta" : false,
+    "previous_ranking_period_html" : "",
+    "earlier_ranking_period_htmls" : [
+      ""
+    ]
+  },
+  "actions" :
+  {
+    "reextract_db" : false,
+    "refilter_db" : false,
+    "recompute_rankings" : false,
+    "regenerate_html" : false
+  }
+}

@@ -24,7 +24,7 @@ Note that this repository was made to be compiled and run on Windows (64-bit). I
 3. Clone `https://github.com/kvarsc/1000rank.git`.
 4. Build the application in Visual Studio.
 5. Copy the file `lexbor.dll` from the `Release` folder of your `lexbor` installation to the directory containing the built `1000rank` application (`1000rank\x64\Release` or `1000rank\x64\Debug`).
-6. If you're using the default `config.json` file that comes with the repo, head to https://1000rank.com and download the HTML files of the [2019 rankings](https://1000rank.com/2019rankings.html) and the [2022 rankings](https://1000rank.com/2022rankings.html) to the `1000rank\1000rank\html` directory. Make sure you download these files as HTML only.
+6. If you're using the default config files that come with the repo, head to https://1000rank.com and download the HTML files of the [2019 rankings](https://1000rank.com/2019rankings.html) and the [2022 rankings](https://1000rank.com/2022rankings.html) to the `1000rank\1000rank\html` directory. Make sure you download these files as HTML only.
 7. Run the application in Visual Studio.
 
 ## License

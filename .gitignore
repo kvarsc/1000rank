@@ -369,12 +369,11 @@ ultimate_player_database*
 
 # html files except for ranking template
 *.html
-!ranking_template.html
+!*ranking_template.html
 
 # JSON files other than main config
 *.json
-!meta-config.json
-!config.json
+!*config.json
 
 # my personal notes
 nextsteps.txt

@@ -259,7 +259,7 @@ void RankingSystem::compute_uncertainties()
 	{
 		string player_id = player_match_history.first;
 		double player_ranking_score = players[player_id].get_ranking_score();
-		players[player_id].add_to_uncertainty( 0.5 / (2 * max_ranking_score) ); // minor attendance bonus
+		players[player_id].add_to_uncertainty( 1.0 / max_ranking_score ); // minor attendance bonus
 
 		// Iterate through all opponents and calculate uncertainties on the player
 		for (const auto& opponent_match_record : player_match_history.second)
