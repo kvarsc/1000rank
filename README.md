@@ -27,6 +27,10 @@ Note that this repository was made to be compiled and run on Windows (64-bit). I
 6. If you're using the default config files that come with the repo, head to https://1000rank.com and download the HTML files of the [2019 rankings](https://1000rank.com/2019rankings.html) and the [2022 rankings](https://1000rank.com/2022rankings.html) to the `1000rank\1000rank\html` directory. Make sure you download these files as HTML only.
 7. Run the application in Visual Studio.
 
+## "Documentation"
+
+Thorough documentation of the code is not currently available. As a consolation, the code itself is fairly well-commented and organized. Furthermore, a white paper detailing the algorithm's motivation and development can be found [here](https://1000rank.com/whitepaper.pdf).
+
 ## License
 
 This project is licensed under the MIT License. For more details, see [LICENSE.txt](LICENSE.txt).
