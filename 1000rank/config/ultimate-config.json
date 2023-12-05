@@ -118,6 +118,11 @@
       "id": "maingame-fest-mini-invitacional__ultimate-singles",
       "name": "Maingame Fest Mini: Invitacional",
       "end": 1696482000
+    },
+    {
+      "id": "cumbre-2__ultimate-singles",
+      "name": "CUMBRE 2",
+      "end": 1699246800
     }
   ],
   "endpoint_db_filtering" :
